@@ -12,10 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 */
-import InfoIcon from '@mui/icons-material/Info';
-import React, { useEffect } from 'react';
-import { CardHeader, Card, CardContent, IconButton, Typography } from '@mui/material';
-import PropTypes from 'prop-types';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import React from "react";
+import {
+  Box,
+  Collapse,
+  List,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
+import PropTypes from "prop-types";
 
 /**
  * Display an Entity card for a given entity.
@@ -23,22 +30,16 @@ import PropTypes from 'prop-types';
  * * entity - The entity to display
  * * hilight
  * * onClick - A callback invoked when the card is clicked.
- * * onInfoClick - A callback invoked when the Info icon is clicked.
  */
 function Entity(props) {
+  const [showChildren, setShowChildren] = React.useState(false);
 
   const cardRef = React.createRef(); // Create a ref for the containing card so that we can scroll it into view
 
-  function onClick() {
+  function onClick(event) {
+    event.stopPropagation();
     if (props.onClick) {
       props.onClick(props.entity);
-    }
-  }
-
-  function onInfoClick(event) {
-    event.stopPropagation();
-    if (props.onInfoClick) {
-      props.onInfoClick(props.entity);
     }
   }
 
@@ -50,52 +51,91 @@ function Entity(props) {
   //
   let hilight = false;
   if (props.hilight) {
-    if (typeof props.hilight === "string" && props.hilight === props.entity.id) {
+    if (
+      typeof props.hilight === "string" &&
+      props.hilight === props.entity.id
+    ) {
       hilight = true;
     } else if (typeof props.hilight === "boolean") {
       hilight = props.hilight;
     } else {
-      hilight = props.entity.id === props.hilight.id
+      hilight = props.entity.id === props.hilight.id;
     }
   }
 
   // When the entity has rendered, if this entity is hilighted, then scroll it into
   // view within the containing list.
-  useEffect(() => {
-    if (hilight) {
-      cardRef.current.scrollIntoView();
-    }
-  })
+  // useEffect(() => {
+  //   if (hilight && cardRef.current) {
+  //     cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //   }
+  // });
+
+  function toggleChildren(event) {
+    event.stopPropagation();
+    setShowChildren(!showChildren);
+  }
 
   return (
-    <Card ref={cardRef} variant="outlined" style={{ backgroundColor: hilight ? "lightgray" : "white", margin: "4px" }} onClick={onClick}>
-      <CardHeader
-        title={props.entity.type}
-        action={props.onInfoClick &&
-          <IconButton
-            color="primary"
-            size="small"
-            onClick={onInfoClick}>
-            <InfoIcon />
-          </IconButton>
-        }>
-      </CardHeader>
-      <CardContent>
-        <Typography variant="body1">
-          Text: {props.entity.mentionText}
-          <br />
-          Confidence: {props.entity.confidence}
-        </Typography>
-      </CardContent>
-    </Card>
-  )
+    <>
+      <List>
+        <ListItemButton
+          onClick={toggleChildren}
+          onMouseEnter={onClick}
+          ref={cardRef}
+          style={{
+            backgroundColor: hilight ? "rgba(63, 81, 181, 0.1)" : "", // Change this to the desired color
+          }}
+        >
+          <ListItemText
+            style={{ fontWeight: "bold" }}
+            primary={props.entity.type}
+          />
+          {props.children ? (
+            <>
+              <ListItemText
+                style={{
+                  fontStyle: "italic",
+                  overflowWrap: "break-word",
+                }}
+                primary={`(${props.entity.mentionText})`}
+              />
+              {showChildren ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </>
+          ) : (
+            <ListItemText
+              style={{ overflowWrap: "break-word" }}
+              primary={props.entity.mentionText}
+            />
+          )}
+        </ListItemButton>
+        {props.children && (
+          <>
+            <Collapse in={showChildren}>
+              <Box ml={5}>
+                {props.children.map((child, index) => (
+                  <Entity
+                    key={index}
+                    entity={child}
+                    onClick={props.onClick}
+                    hilight={props.hilight}
+                    style={{ marginLeft: "5%" }}
+                  />
+                ))}
+              </Box>
+            </Collapse>
+          </>
+        )}
+      </List>
+    </>
+  );
 } // Entity
 
 Entity.propTypes = {
-  'onInfoClick': PropTypes.func.isRequired,
-  'onClick': PropTypes.func.isRequired,
-  'hilight': PropTypes.object,
-  'entity': PropTypes.object.isRequired
-}
+  onClick: PropTypes.func.isRequired,
+  hilight: PropTypes.object,
+  entity: PropTypes.object.isRequired,
+  children: PropTypes.array,
+};
 
-export default Entity
+export default Entity;

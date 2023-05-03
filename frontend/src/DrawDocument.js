@@ -181,12 +181,14 @@ function DrawDocument(props) {
           {
             // Draw an entity (an SVG Polygon) hilighter for each of the entities that we find.
             props.entities.map(entity => {
+              const childEntities = entity.properties;
               return <EntityHilight
                 key={entity.id}
                 imageSize={imageSizeSmaller}
                 entity={entity}
                 onClick={entityClick}
-                hilight={props.hilight} />
+                hilight={props.hilight}
+                childEntities={childEntities.length > 0 ? childEntities : null} />
             })
           }
         </svg>

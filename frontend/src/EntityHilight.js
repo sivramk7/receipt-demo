@@ -20,70 +20,54 @@ import PropTypes from 'prop-types';
  * hilight
  * imageSize
  * onClick
- * onMouseOver
  * entity
  */
 function EntityHilight(props) {
-  let onMouseOverCallback;
-  let onClickCallback;
-  if (props.onClick) {
-    onClickCallback = props.onClick.bind(null, props.entity)
-  }
-  if (props.onMouseOver) {
-    onMouseOverCallback = props.onMouseOver.bind(null, props.entity)
-  }
-
-  const polygon = useRef(null);
-
-  useEffect(() => {
-    let polygonCopy = polygon.current;
-    if (onClickCallback) {
-      polygon.current.addEventListener('click', onClickCallback);
-    }
-    if (onMouseOverCallback) {
-      polygon.current.addEventListener('click', onMouseOverCallback);
-    }
-    return () => {
-      if (onClickCallback) {
-        polygonCopy.removeEventListener('click', onClickCallback);
+  const renderEntity = (entity) => {
+    const onClick = (event) => {
+      if (props.onClick) {
+        props.onClick(entity, event);
       }
-      if (onMouseOverCallback) {
-        polygonCopy.removeEventListener('click', onMouseOverCallback);
-      }
-    }
-  })
+    };
 
-  //console.dir(this.props.entity)
-  let hilight = false;
-  if (props.hilight) {
-    if (typeof props.hilight === "string" && props.hilight === props.entity.id) {
-      hilight = true;
-    } else if (typeof props.hilight === "boolean") {
-      hilight = props.hilight;
-    } else {
-      hilight = props.entity.id === props.hilight.id
-    }
-  }
-  let points = "";
-  props.entity.pageAnchor.pageRefs[0].boundingPoly.normalizedVertices.forEach((point) => {
-    if (points.length !== 0) {
-      points += " "
-    }
-    points += `${point.x * props.imageSize.width + props.imageSize.x},${point.y * props.imageSize.height + props.imageSize.y}`
-  })
-  let fillColor = "yellow";
-  if (hilight) {
-    fillColor = "blue";
-  }
-  return <polygon ref={polygon} points={points} fillOpacity="0.1" stroke="blue" fill={fillColor}></polygon>
+    const isHilighted = () => {
+      if (!props.hilight) return false;
+      if (typeof props.hilight === 'string') return props.hilight === entity.id;
+      if (typeof props.hilight === 'boolean') return props.hilight;
+      return entity.id === props.hilight.id;
+    };
+
+    const points = entity.pageAnchor.pageRefs[0].boundingPoly.normalizedVertices
+      .map((point) => `${point.x * props.imageSize.width + props.imageSize.x},${point.y * props.imageSize.height + props.imageSize.y}`)
+      .join(' ');
+
+    return (
+      <polygon
+        key={entity.id}
+        points={points}
+        fillOpacity="0.1"
+        stroke="blue"
+        fill={isHilighted() ? 'blue' : 'yellow'}
+        onClick={onClick}
+        onMouseOver={onClick}
+      ></polygon>
+    );
+  };
+
+  return (
+    <>
+      {renderEntity(props.entity)}
+      {props.childEntities && props.childEntities.map(renderEntity)}
+    </>
+  );
 } // EntityHilight
 
 EntityHilight.propTypes = {
-  'imageSize': PropTypes.object.isRequired,
-  'onClick': PropTypes.func,
-  'onMouseOver': PropTypes.func,
-  'hilight': PropTypes.object,
-  'entity': PropTypes.object,
-}
+  imageSize: PropTypes.object.isRequired,
+  onClick: PropTypes.func,
+  hilight: PropTypes.object,
+  entity: PropTypes.object,
+  childEntities: PropTypes.array,
+};
 
-export default EntityHilight
+export default EntityHilight;
