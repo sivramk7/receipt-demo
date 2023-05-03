@@ -65,9 +65,9 @@ function DocAITopLevel(props) {
         const formData = new FormData();
         formData.append("file", event.target.files[0]);
         // For local
-        const request = await fetch("https://cors-anywhere.herokuapp.com/http://34.171.233.135/upload/", {
+        // const request = await fetch("https://cors-anywhere.herokuapp.com/http://demo.getafto.com/upload/", {
         // For prod
-        // const request = await fetch("/upload/", {
+        const request = await fetch("/upload/", {
           method: "POST",
           body: formData,
         });
