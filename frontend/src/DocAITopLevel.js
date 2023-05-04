@@ -31,6 +31,7 @@ import JSONPage from "./JSONPage";
 import DocAIView from "./DocAIView";
 import AboutDialog from "./About";
 import HelpIcon from "@mui/icons-material/Help";
+import { Select, MenuItem } from "@mui/material";
 //import PropTypes from 'prop-types';
 
 /**
@@ -44,9 +45,14 @@ function DocAITopLevel(props) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [fileType, setFileType] = useState("invoice");
 
   function tabChange(event, newValue) {
     setTabValue(newValue);
+  }
+
+  function handleFileTypeChange(event) {
+    setFileType(event.target.value);
   }
 
   function loadJson(event) {
@@ -64,8 +70,9 @@ function DocAITopLevel(props) {
       try {
         const formData = new FormData();
         formData.append("file", event.target.files[0]);
+        formData.append("file_type", fileType);
         // For local
-        // const request = await fetch("https://cors-anywhere.herokuapp.com/http://demo.getafto.com/upload/", {
+        // const request = await fetch("http://127.0.0.1:5000/upload/", {
         // For prod
         const request = await fetch("/upload/", {
           method: "POST",
@@ -78,6 +85,8 @@ function DocAITopLevel(props) {
         setLoading(false);
         console.log(`ERROR: ${e}`);
         setData(null);
+      } finally {
+        event.target.value = null;
       }
     };
     fileReader.readAsBinaryString(event.target.files[0]); // When the file has been read, the onload() will be invoked.
@@ -89,6 +98,27 @@ function DocAITopLevel(props) {
           <Typography variant="h6" style={{ flexGrow: 1 }}>
             Document AI Dev
           </Typography>
+          <Select
+            value={fileType}
+            onChange={handleFileTypeChange}
+            sx={{
+              marginRight: "8px",
+              color: "white",
+              "& .MuiSvgIcon-root": {
+                color: "white",
+              },
+              "&:focus": {
+                outline: "none",
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+            }}
+          >
+            <MenuItem value="invoice">Invoice</MenuItem>
+            <MenuItem value="expense">Expense</MenuItem>
+            <MenuItem value="t4-tax-document">T4 Tax document</MenuItem>
+          </Select>
           <label htmlFor="contained-button-file">
             <Input
               style={{ display: "none" }}

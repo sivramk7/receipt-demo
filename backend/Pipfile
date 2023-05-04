@@ -8,6 +8,7 @@ flask = "*"
 google-cloud-documentai = "*"
 google-auth = "*"
 gunicorn = "*"
+flask-cors = "*"
 
 [dev-packages]
 black = "*"
