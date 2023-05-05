@@ -26,6 +26,7 @@ import {
   IconButton,
   responsiveFontSizes,
 } from "@mui/material";
+import Search from "./Search";
 import Details from "./Details";
 import JSONPage from "./JSONPage";
 import DocAIView from "./DocAIView";
@@ -72,9 +73,9 @@ function DocAITopLevel(props) {
         formData.append("file", event.target.files[0]);
         formData.append("file_type", fileType);
         // For local
-        // const request = await fetch("http://127.0.0.1:5000/upload/", {
+        const request = await fetch("http://127.0.0.1:5000/upload/", {
         // For prod
-        const request = await fetch("/upload/", {
+        // const request = await fetch("/upload/", {
           method: "POST",
           body: formData,
         });
@@ -142,6 +143,7 @@ function DocAITopLevel(props) {
         <Tab label="Document" />
         <Tab label="JSON" />
         <Tab label="Details" />
+        <Tab label="Search" />
       </Tabs>
       <Divider />
       <Card
@@ -157,6 +159,7 @@ function DocAITopLevel(props) {
         {tabValue === 0 && <DocAIView data={data} />}
         {tabValue === 1 && <JSONPage data={data} />}
         {tabValue === 2 && <Details data={data} />}
+        {tabValue === 3 && <Search data={data} />}
       </Card>
       <AboutDialog open={aboutOpen} close={() => setAboutOpen(false)} />
     </Card>

@@ -1,4 +1,6 @@
 import json
+import openai
+from decouple import config
 
 from flask import Flask, request, jsonify
 from google.api_core.client_options import ClientOptions
@@ -6,14 +8,42 @@ from google.cloud import documentai_v1 as documentai
 from google.oauth2 import service_account
 from flask_cors import CORS
 
+openai.api_key = config("OPENAI_KEY")
+openai.organization = config("OPENAI_ORG")
 app = Flask(__name__)
 CORS(app)
 
 PROCESSORS = {
     "invoice": "5ad196c7d2038188",
     "expense": "19f428b10a5af1db",
-    "t4-tax-document": "2e1d3d05ee3b0bcf"
+    "t4-tax-document": "2e1d3d05ee3b0bcf",
 }
+
+m = []
+
+
+@app.route("/search/", methods=["POST"])
+def search():
+    system_role = (
+        "You are an AI Assistant who helps answer questions based on provided OCR text."
+        "The provided OCR text can be from an invoice, expense bill or a T4 tax document."
+    )
+    ocr_text = request.json["ocr_text"]
+    previous_messages = request.json["context"]
+    prompt = request.json["prompt"]
+    messages = (
+        [
+            {"role": "system", "content": system_role},
+            {"role": "user", "content": f"Here is the OCR Text: {ocr_text}"},
+        ]
+        + previous_messages
+        + [{"role": "user", "content": prompt}]
+    )
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
+    )
+    return jsonify(completion)
 
 
 @app.route("/upload/", methods=["POST"])

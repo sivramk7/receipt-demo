@@ -9,6 +9,8 @@ google-cloud-documentai = "*"
 google-auth = "*"
 gunicorn = "*"
 flask-cors = "*"
+openai = "*"
+python-decouple = "*"
 
 [dev-packages]
 black = "*"
