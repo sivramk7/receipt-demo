@@ -32,9 +32,9 @@ function Search(props) {
 
   async function submitPromptData() {
     // for local
-    const req = await fetch("http://127.0.0.1:5000/search/", {
-      // for prod
-      // const req = await fetch("/search/", {
+    // const req = await fetch("http://127.0.0.1:5000/search/", {
+    // for prod
+    const req = await fetch("/search/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
