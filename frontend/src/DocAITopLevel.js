@@ -33,6 +33,7 @@ import DocAIView from "./DocAIView";
 import AboutDialog from "./About";
 import HelpIcon from "@mui/icons-material/Help";
 import { Select, MenuItem } from "@mui/material";
+import FilePreview from "./FilePreview";
 //import PropTypes from 'prop-types';
 
 /**
@@ -47,6 +48,8 @@ function DocAITopLevel(props) {
   const [loading, setLoading] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [fileType, setFileType] = useState("invoice");
+  const [file, setFile] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   function tabChange(event, newValue) {
     setTabValue(newValue);
@@ -58,39 +61,42 @@ function DocAITopLevel(props) {
 
   function loadJson(event) {
     //debugger;
-    setLoading(true);
+    setTabValue(0)
+    setData(null)
+    setFile(null);
+    setUploadedFile(null);
     if (event.target.files.length === 0) {
       setData(null);
       return;
     }
 
-    // Create a file reader to read the file from the local file system.  Read the file as a binary string.
-    // We have registered an onload() call back to be called when the file has been loaded.
-    const fileReader = new FileReader();
-    fileReader.onload = async () => {
-      try {
-        const formData = new FormData();
-        formData.append("file", event.target.files[0]);
-        formData.append("file_type", fileType);
-        // For local
+    const file = event.target.files[0];
+    setFile(file);
+    setUploadedFile(file);
+  }
+
+  async function processFile() {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("file_type", fileType);
+
+      // For local
         // const request = await fetch("http://127.0.0.1:5000/upload/", {
         // For prod
         const request = await fetch("/upload/", {
           method: "POST",
           body: formData,
         });
-        const response = await request.json();
-        setData(response);
-        setLoading(false);
-      } catch (e) {
-        setLoading(false);
-        console.log(`ERROR: ${e}`);
-        setData(null);
-      } finally {
-        event.target.value = null;
+      const response = await request.json();
+      setData(response);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      console.log(`ERROR: ${e}`);
+      setData(null);
       }
-    };
-    fileReader.readAsBinaryString(event.target.files[0]); // When the file has been read, the onload() will be invoked.
   }
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
@@ -131,9 +137,12 @@ function DocAITopLevel(props) {
               onChange={loadJson}
             />
             <Button color="inherit" component="span">
-              {loading ? "Loading..." : "Load Image/PDF"}
+              Load Image/PDF
             </Button>
           </label>
+          <Button disabled={!uploadedFile} color="inherit" component="span" onClick={processFile}>
+            {loading ? "Processing..." : "Process"}
+          </Button>
           <IconButton color="inherit" onClick={() => setAboutOpen(true)}>
             <HelpIcon />
           </IconButton>
@@ -156,6 +165,7 @@ function DocAITopLevel(props) {
           flexDirection: "column",
         }}
       >
+        {uploadedFile && !data && <FilePreview file={uploadedFile} />}
         {tabValue === 0 && <DocAIView data={data} />}
         {tabValue === 1 && <JSONPage data={data} />}
         {tabValue === 2 && <Details data={data} />}

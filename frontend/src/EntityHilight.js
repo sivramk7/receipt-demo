@@ -37,7 +37,7 @@ function EntityHilight(props) {
       return entity.id === props.hilight.id;
     };
 
-    const points = entity.pageAnchor.pageRefs[0].boundingPoly?.normalizedVertices
+    const points = entity.pageAnchor?.pageRefs[0].boundingPoly?.normalizedVertices
       .map((point) => `${point.x * props.imageSize.width + props.imageSize.x},${point.y * props.imageSize.height + props.imageSize.y}`)
       .join(' ');
 
