@@ -89,14 +89,12 @@ function DrawDocument(props) {
 
   // When the Dom has rendered, fit the SVG to viewer.
   useEffect(() => {
-    if (viewerRef.current) {
-      viewerRef.current.fitToViewer();
-    }
+    setSvgContainerSize(minSize);
   }, []);
 
   // Handle a calculation of the container size.
   useEffect(() => {
-    if (ref1.current) {
+    const containerResize = debounce(function resize() {
       const br = ref1.current.getBoundingClientRect();
       const w = ref1.current.offsetWidth
       const h = ref1.current.offsetHeight
@@ -104,24 +102,20 @@ function DrawDocument(props) {
       if (w !== svgContainerSize.width || h !== svgContainerSize.height) {
         setSvgContainerSize({ width: w, height: h })
       }
+    }, 100)
+    if (ref1.current) {
+      containerResize()
     }
   }, [svgContainerSize.width, svgContainerSize.height])
 
   useEffect(() => {
     if (ref1.current) {
-      const w = ref1.current.offsetWidth;
-      const h = ref1.current.offsetHeight;
-      setSvgContainerSize({ width: w, height: h });
-    }
-    if (viewerRef.current) {
-      viewerRef.current.fitToViewer();
+      setSvgContainerSize(minSize);
     }
   }, [props.containerSize]);
 
   // Handle a window resize.
   useEffect(() => {
-    //console.log("Resize handler added!")
-    
     const debouncedHandleResize = debounce(function handleResize() {
       /*
       if (ref1.current) {
@@ -134,7 +128,7 @@ function DrawDocument(props) {
 
       //console.log(`Setting the size to ${minSize.width}x${minSize.height}`)
       setSvgContainerSize(minSize) // The window has resized.  Set the Svg size to something small that will force a resize.
-    }, 1000)
+    }, 100)
 
     //console.log("Adding window resize handler")
     window.addEventListener('resize', debouncedHandleResize)
