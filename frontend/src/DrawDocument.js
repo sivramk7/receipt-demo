@@ -84,7 +84,7 @@ function DrawDocument(props) {
   const ref1 = useRef(null);
   const [tool, setTool] = useState(TOOL_NONE)
   const [value, setValue] = useState(INITIAL_VALUE)
-  const [svgContainerSize, setSvgContainerSize] = useState(minSize)
+  const [svgContainerSize, setSvgContainerSize] = useState(props.containerSize)
 
 
   // When the Dom has rendered, fit the SVG to viewer.
@@ -96,7 +96,6 @@ function DrawDocument(props) {
 
   // Handle a calculation of the container size.
   useEffect(() => {
-
     if (ref1.current) {
       const br = ref1.current.getBoundingClientRect();
       const w = ref1.current.offsetWidth
@@ -107,6 +106,17 @@ function DrawDocument(props) {
       }
     }
   }, [svgContainerSize.width, svgContainerSize.height])
+
+  useEffect(() => {
+    if (ref1.current) {
+      const w = ref1.current.offsetWidth;
+      const h = ref1.current.offsetHeight;
+      setSvgContainerSize({ width: w, height: h });
+    }
+    if (viewerRef.current) {
+      viewerRef.current.fitToViewer();
+    }
+  }, [props.containerSize]);
 
   // Handle a window resize.
   useEffect(() => {
@@ -203,6 +213,7 @@ DrawDocument.propTypes = {
   'entityOnClick': PropTypes.func,
   'hilight': PropTypes.object,
   'entities': PropTypes.array,
+  'containerSize': PropTypes.object.isRequired
 }
 
 export default DrawDocument

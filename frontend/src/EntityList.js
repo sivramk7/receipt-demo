@@ -34,7 +34,6 @@ function EntityList(props) {
     <Box
       sx={{
         height: "100%",
-        width: "33%",
         overflowY: "auto",
       }}
     >

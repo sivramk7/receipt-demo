@@ -102,8 +102,8 @@ function DocAITopLevel(props) {
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Document AI Dev
+          <Typography variant="h6" style={{ flexGrow: 1, width: 70 }}>
+            Doc AI
           </Typography>
           <Select
             value={fileType}
@@ -143,9 +143,6 @@ function DocAITopLevel(props) {
           <Button disabled={!uploadedFile} color="inherit" component="span" onClick={processFile}>
             {loading ? "Processing..." : "Process"}
           </Button>
-          <IconButton color="inherit" onClick={() => setAboutOpen(true)}>
-            <HelpIcon />
-          </IconButton>
         </Toolbar>
       </AppBar>
       <Tabs value={tabValue} onChange={tabChange}>

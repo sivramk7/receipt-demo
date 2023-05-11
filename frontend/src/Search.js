@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { elementType } from "prop-types";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 function Chat(props) {
   return props.data ? (
@@ -29,8 +29,10 @@ function Search(props) {
   const [prompt, setPrompt] = useState("");
   const [chats, setChats] = useState([]);
   const [tempPrompt, setTempPrompt] = useState();
+  const textFieldRef = useRef();
 
   async function submitPromptData() {
+    // console.log("ocr_data ==>>> ", ocr_data)
     // for local
     // const req = await fetch("http://127.0.0.1:5000/search/", {
     // for prod
@@ -53,7 +55,7 @@ function Search(props) {
       { role: "user", content: prompt },
       { role: "assistant", content: response },
     ]);
-    setPrompt();
+    setPrompt("");
   }
 
   function onPromptChange(event) {
@@ -73,6 +75,11 @@ function Search(props) {
     }
   }
 
+  async function sendPromptData(event) {
+    setTempPrompt({ role: "user", content: event.target.value });
+    submitPromptData();
+  }
+
   return !ocr_data ? (
     <></>
   ) : (
@@ -82,26 +89,23 @@ function Search(props) {
           <Typography variant="h5">Assistant</Typography>
           <Button onClick={clearChats}>Clear Chat</Button>
         </Stack>
-        {chats.map((chat) => {
+        {chats.map((chat, index) => {
           return (
             <>
-              <Chat data={chat} />
+              <Chat keys={index} data={chat} />
             </>
           );
         })}
         {tempPrompt && (
           <>
-            <Chat data={tempPrompt} />
+            <Chat keys="input" data={tempPrompt} />
           </>
         )}
-        {/* {chatResponse.map((text, index) => {
-          return ( */}
-        <>{/* <Chat data={chatResponse} /> */}</>
-        {/* );
-        })} */}
         <Box sx={{ width: "100%" }}>
           <Stack direction="row">
             <TextField
+              ref={textFieldRef}
+              value={prompt}
               sx={{ width: "100%" }}
               id="outlined-multiline-flexible"
               onChange={onPromptChange}
@@ -109,12 +113,12 @@ function Search(props) {
               label="Enter prompt here: (Ctrl+Enter to send)"
               multiline
             />
-            {/* <Button
-              onClick={onSendClick}
+            <Button
+              onClick={(event) => sendPromptData(event)}
               variant="contained"
             >
               Send
-            </Button> */}
+            </Button>
           </Stack>
         </Box>
       </CardContent>

@@ -1,93 +1,99 @@
-/*
-# Copyright 2022, Google, Inc.
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-*/
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import DrawDocument from "./DrawDocument"
-import EntityInfoDialog from './EntityInfoDialog';
 import PageSelector from './PageSelector';
 import NoData from './NoData';
-import { Box } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import PropTypes from 'prop-types';
 import EntityList from './EntityList';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-/**
- * props
- * * data - The Document object from the JSON
- */
+
+// let timer
+// function debounce(fn, ms) {
+//   return _ => {
+//     clearTimeout(timer)
+//     timer = setTimeout(_ => {
+//       timer = null
+//       fn.apply(this, arguments)
+//     }, ms)
+//   };
+// }
 
 function DocAIView(props) {
   const [hilight, setHilight] = useState(null);
-  const [entityInfoDialogOpen, setEntityInfoDialogOpen] = useState(false);
-  const [entityInfoDialogEntity, setEntityInfoDialogEntity] = useState(null);
   const [imageSize, setImageSize] = useState({width: 0, height: 0});
+  const [entityListOpen, setEntityListOpen] = useState(true);
+  const [pageSelectorOpen, setPageSelectorOpen] = useState(true);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const ref1 = useRef(null);
 
   function entityOnClick(entity) {
     setHilight(entity)
-  }
-
-  function onInfoClick(entity) {
-    setEntityInfoDialogOpen(true);
-    setEntityInfoDialogEntity(entity);
   }
 
   useEffect(() => {
     setImageSize({width: 0, height: 0})
   }, [props.data])
 
+  useEffect(() => {
+    const updateContainerSize = () => {
+      if (ref1.current) {
+        const w = ref1.current.offsetWidth;
+        const h = ref1.current.offsetHeight;
+        setContainerSize({ width: w, height: h });
+      }
+    };
+
+    updateContainerSize();
+  }, [entityListOpen, pageSelectorOpen]);
+
   if (!props.data) {
     return (<NoData />)
   }
 
-  //console.dir(props.data);
   const imageData = props.data.pages[0].image.content;
+
   if (imageSize.width === 0 && imageSize.height === 0) {
-    // We don't know the image size.  Lets find out.
     const img = document.createElement("img");
     img.onload = function (event)
     {
-      console.log("natural:", img.naturalWidth, img.naturalHeight);
-      console.log("width,height:", img.width, img.height);
-      console.log("offsetW,offsetH:", img.offsetWidth, img.offsetHeight);
-        setImageSize({width: img.width, height: img.height })
+      setImageSize({width: img.width, height: img.height })
     }
     img.src=`data:image/png;base64,${imageData}`
     return <NoData/>
   }
-  //const imageSize = { width: props.data.pages[0].image.width, height: props.data.pages[0].image.height }
-  const drawDocument = <DrawDocument
-    imageData={imageData}
-    imageSize={imageSize}
-    entities={props.data.entities}
-    hilight={hilight}
-    entityOnClick={entityOnClick} />;
 
   return (
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
-      <EntityList data={props.data} onInfoClick={onInfoClick} entityOnClick={entityOnClick} hilight={hilight} />
-      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "row" }}>
-        <Box sx={{ flexGrow: 1 }}>
-          {drawDocument}
+      <Box>
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', paddingLeft: "6px" }} onClick={() => setEntityListOpen(!entityListOpen)}>
+          <IconButton edge="start" color="inherit" aria-label="menu" >
+            {entityListOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
+          </IconButton>
         </Box>
-        <Box>
-          <PageSelector data={props.data}></PageSelector>
-        </Box>
-
+        {entityListOpen && (
+          <EntityList data={props.data} entityOnClick={entityOnClick} hilight={hilight} />
+        )}
       </Box>
-      <EntityInfoDialog
-        open={entityInfoDialogOpen}
-        close={() => setEntityInfoDialogOpen(false)}
-        entity={entityInfoDialogEntity}></EntityInfoDialog>
+      <Box ref={ref1} sx={{ flexGrow: 1, position: "relative", minWidth: 100 }}>
+        <DrawDocument
+          imageData={imageData}
+          imageSize={imageSize}
+          entities={props.data.entities}
+          hilight={hilight}
+          entityOnClick={entityOnClick}
+          containerSize={containerSize}
+        />
+      </Box>
+      <Box>
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => setPageSelectorOpen(!pageSelectorOpen)}>
+          <IconButton edge="end" color="inherit" aria-label="menu" >
+            {pageSelectorOpen ? <ArrowForwardIosIcon /> : <ArrowBackIosIcon />}
+          </IconButton>
+        </Box>
+        {pageSelectorOpen && <PageSelector data={props.data} />}
+      </Box>
     </Box>
   )
 } // DocAIView
