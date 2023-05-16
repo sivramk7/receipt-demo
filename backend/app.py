@@ -17,6 +17,7 @@ PROCESSORS = {
     "invoice": "5ad196c7d2038188",
     "expense": "19f428b10a5af1db",
     "t4-tax-document": "2e1d3d05ee3b0bcf",
+    "bank-statement": "8ef05a0f90e1ccb8",
 }
 
 m = []
@@ -56,6 +57,9 @@ def upload_file():
     project_id = "t4-form-sample-project"
     location = "us"
     processor_id = PROCESSORS.get(document_type, PROCESSORS["invoice"])
+    creds = "./creds.json"
+    if document_type == "bank-statement":
+        creds = "./bank.json"
 
     # Create gcp client using creds.json
     opts = ClientOptions(api_endpoint=f"{location}-documentai.googleapis.com")

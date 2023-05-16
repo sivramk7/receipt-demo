@@ -125,6 +125,7 @@ function DocAITopLevel(props) {
             <MenuItem value="invoice">Invoice</MenuItem>
             <MenuItem value="expense">Expense</MenuItem>
             <MenuItem value="t4-tax-document">T4 Tax document</MenuItem>
+            <MenuItem value="bank-statement">Bank Statement</MenuItem>
           </Select>
           <label htmlFor="contained-button-file">
             <Input
