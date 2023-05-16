@@ -60,10 +60,11 @@ def upload_file():
     creds = "./creds.json"
     if document_type == "bank-statement":
         creds = "./bank.json"
+        project_id = "afto-sample-project1"
 
     # Create gcp client using creds.json
     opts = ClientOptions(api_endpoint=f"{location}-documentai.googleapis.com")
-    credentials = service_account.Credentials.from_service_account_file("./creds.json")
+    credentials = service_account.Credentials.from_service_account_file(creds)
     client = documentai.DocumentProcessorServiceClient(
         credentials=credentials,
         client_options=opts,
