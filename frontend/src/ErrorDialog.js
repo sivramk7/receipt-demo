@@ -24,7 +24,6 @@ import PropTypes from 'prop-types';
 function ErrorDialog(props) {
 
   if (this.props.open) {
-    console.log(`Error logging:`)
     console.dir(props.error);
   }
   return (

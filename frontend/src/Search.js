@@ -7,7 +7,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { elementType } from "prop-types";
 import { useState, useRef } from "react";
 
 function Chat(props) {
@@ -32,9 +31,8 @@ function Search(props) {
   const textFieldRef = useRef();
 
   async function submitPromptData() {
-    // console.log("ocr_data ==>>> ", ocr_data)
     // for local
-    // const req = await fetch("http://127.0.0.1:5000/search/", {
+    // const req = await fetch("https://demo.getafto.com/search/", {
     // for prod
     const req = await fetch("/search/", {
       method: "POST",

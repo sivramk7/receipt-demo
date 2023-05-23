@@ -32,9 +32,7 @@ const desiredImageWidth = 80   // Desired width of the mini page image
 function PageSelector(props) {
   function pageChange(pageNumber) {
     setValue(pageNumber)
-    if (props.onPageChange) {
-      props.onPageChange(pageNumber)
-    }
+    props?.setSelectedViewPage(pageNumber)
   }
 
   const [value, setValue] = useState(0);  // Currently selected tab (page/image)

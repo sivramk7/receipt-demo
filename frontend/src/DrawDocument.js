@@ -98,7 +98,6 @@ function DrawDocument(props) {
       const br = ref1.current.getBoundingClientRect();
       const w = ref1.current.offsetWidth
       const h = ref1.current.offsetHeight
-      console.log(`useEffect: NewSize:: ${w}x${h}, currentSize: ${svgContainerSize.width}x${svgContainerSize.height} ${JSON.stringify(br)}`)
       if (w !== svgContainerSize.width || h !== svgContainerSize.height) {
         setSvgContainerSize({ width: w, height: h })
       }
@@ -117,24 +116,11 @@ function DrawDocument(props) {
   // Handle a window resize.
   useEffect(() => {
     const debouncedHandleResize = debounce(function handleResize() {
-      /*
-      if (ref1.current) {
-        const w = ref1.current.offsetWidth
-        const h = ref1.current.offsetHeight
-        //console.log(`Resize:: ${w}x${h}`)
-      }
-      */
-      //setRefreshState(refreshState+1)
-
-      //console.log(`Setting the size to ${minSize.width}x${minSize.height}`)
       setSvgContainerSize(minSize) // The window has resized.  Set the Svg size to something small that will force a resize.
     }, 100)
-
-    //console.log("Adding window resize handler")
     window.addEventListener('resize', debouncedHandleResize)
 
     return () => {
-      //console.log("Removing window resize handler")
       window.removeEventListener('resize', debouncedHandleResize)
     }
   }, [minSize])
@@ -172,7 +158,6 @@ function DrawDocument(props) {
         width={svgContainerSize.width} height={svgContainerSize.height}
         tool={tool} onChangeTool={setTool}
         value={value} onChangeValue={setValue}
-        onClick={event => console.log('click', event.x, event.y, event.originalEvent)}
       >
         <svg xmlns="http://www.w3.org/2000/svg"
           width={imageSize.width} height={imageSize.height}
@@ -187,7 +172,7 @@ function DrawDocument(props) {
             props.entities.map(entity => {
               const childEntities = entity.properties;
               return <EntityHilight
-                key={entity.id}
+                key={`${entity.id}-${entity.mentionText}`}
                 imageSize={imageSizeSmaller}
                 entity={entity}
                 onClick={entityClick}

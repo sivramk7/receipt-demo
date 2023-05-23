@@ -34,7 +34,7 @@ function EntityHilight(props) {
       if (!props.hilight) return false;
       if (typeof props.hilight === 'string') return props.hilight === entity.id;
       if (typeof props.hilight === 'boolean') return props.hilight;
-      return entity.id === props.hilight.id;
+      return JSON.stringify(entity) === JSON.stringify(props.hilight);
     };
 
     const points = entity.pageAnchor?.pageRefs[0].boundingPoly?.normalizedVertices
@@ -43,7 +43,7 @@ function EntityHilight(props) {
 
     return (
       <polygon
-        key={entity.id}
+        key={`${entity.id}-${entity.mentionText}`}
         points={points}
         fillOpacity="0.1"
         stroke="blue"

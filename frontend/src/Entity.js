@@ -58,8 +58,8 @@ function Entity(props) {
       hilight = true;
     } else if (typeof props.hilight === "boolean") {
       hilight = props.hilight;
-    } else {
-      hilight = props.entity.id === props.hilight.id;
+    } else if (JSON.stringify(props.entity) === JSON.stringify(props.hilight)) {
+      hilight = true;
     }
   }
 
@@ -84,12 +84,18 @@ function Entity(props) {
           onMouseEnter={onClick}
           ref={cardRef}
           style={{
-            backgroundColor: hilight ? "rgba(63, 81, 181, 0.1)" : "", // Change this to the desired color
+            backgroundColor: hilight ? "rgba(63, 81, 181, 0.1)" : "",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
           }}
         >
           <ListItemText
-            style={{ fontWeight: "bold" }}
-            primary={props.entity.type}
+            style={{ fontWeight: "bold", overflowWrap: "break-word",
+            wordWrap: "break-word",
+            hyphens: "auto",
+            width: "95%" }}
+            primary={`${props.entity.type}:`}
           />
           {props.children ? (
             <>
@@ -97,6 +103,9 @@ function Entity(props) {
                 style={{
                   fontStyle: "italic",
                   overflowWrap: "break-word",
+            wordWrap: "break-word",
+            hyphens: "auto",
+            width: "95%" 
                 }}
                 primary={`(${props.entity.mentionText})`}
               />
@@ -104,7 +113,10 @@ function Entity(props) {
             </>
           ) : (
             <ListItemText
-              style={{ overflowWrap: "break-word" }}
+              style={{ overflowWrap: "break-word",
+              wordWrap: "break-word",
+              hyphens: "auto",
+              width: "95%"  }}
               primary={props.entity.mentionText}
             />
           )}

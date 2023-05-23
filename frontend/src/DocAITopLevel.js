@@ -83,7 +83,7 @@ function DocAITopLevel(props) {
       formData.append("file_type", fileType);
 
       // For local
-        // const request = await fetch("http://127.0.0.1:5000/upload/", {
+        // const request = await fetch("https://demo.getafto.com/upload/", {
         // For prod
         const request = await fetch("/upload/", {
           method: "POST",
@@ -94,7 +94,6 @@ function DocAITopLevel(props) {
       setLoading(false);
     } catch (e) {
       setLoading(false);
-      console.log(`ERROR: ${e}`);
       setData(null);
       }
   }

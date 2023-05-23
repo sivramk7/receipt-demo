@@ -8,24 +8,14 @@ import EntityList from './EntityList';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-
-// let timer
-// function debounce(fn, ms) {
-//   return _ => {
-//     clearTimeout(timer)
-//     timer = setTimeout(_ => {
-//       timer = null
-//       fn.apply(this, arguments)
-//     }, ms)
-//   };
-// }
-
 function DocAIView(props) {
   const [hilight, setHilight] = useState(null);
   const [imageSize, setImageSize] = useState({width: 0, height: 0});
   const [entityListOpen, setEntityListOpen] = useState(true);
   const [pageSelectorOpen, setPageSelectorOpen] = useState(true);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [selectedViewPage, setSelectedViewPage] = useState(0)
+  const [entities, setEntities] = useState([])
   const ref1 = useRef(null);
 
   function entityOnClick(entity) {
@@ -33,8 +23,17 @@ function DocAIView(props) {
   }
 
   useEffect(() => {
-    setImageSize({width: 0, height: 0})
+    setImageSize({width: 0, height: 0});
+    if (props.data && props.data.entities) {
+      setEntities(props.data.entities.filter(entity => parseInt(entity?.pageAnchor?.pageRefs[0]?.page) === selectedViewPage));
+    }
   }, [props.data])
+
+  useEffect(() => {
+    if (props.data && props.data.entities) {
+      setEntities(props.data.entities.filter(entity => parseInt(entity?.pageAnchor?.pageRefs[0]?.page) === selectedViewPage));
+    }
+  }, [selectedViewPage])
 
   useEffect(() => {
     const updateContainerSize = () => {
@@ -52,7 +51,7 @@ function DocAIView(props) {
     return (<NoData />)
   }
 
-  const imageData = props.data.pages[0].image.content;
+  const imageData = props.data.pages[selectedViewPage].image.content;
 
   if (imageSize.width === 0 && imageSize.height === 0) {
     const img = document.createElement("img");
@@ -66,21 +65,21 @@ function DocAIView(props) {
 
   return (
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
-      <Box>
+      <Box sx={{ maxWidth: "25%" }}>
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', paddingLeft: "6px" }} onClick={() => setEntityListOpen(!entityListOpen)}>
           <IconButton edge="start" color="inherit" aria-label="menu" >
             {entityListOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
           </IconButton>
         </Box>
         {entityListOpen && (
-          <EntityList data={props.data} entityOnClick={entityOnClick} hilight={hilight} />
+          <EntityList data={props.data} entities={entities} entityOnClick={entityOnClick} hilight={hilight} />
         )}
       </Box>
-      <Box ref={ref1} sx={{ flexGrow: 1, position: "relative", minWidth: 100 }}>
+      <Box ref={ref1} sx={{ flexGrow: 1, position: "relative", minWidth: "100" }}>
         <DrawDocument
           imageData={imageData}
           imageSize={imageSize}
-          entities={props.data.entities}
+          entities={entities}
           hilight={hilight}
           entityOnClick={entityOnClick}
           containerSize={containerSize}
@@ -92,7 +91,7 @@ function DocAIView(props) {
             {pageSelectorOpen ? <ArrowForwardIosIcon /> : <ArrowBackIosIcon />}
           </IconButton>
         </Box>
-        {pageSelectorOpen && <PageSelector data={props.data} />}
+        {pageSelectorOpen && <PageSelector data={props.data} setSelectedViewPage={setSelectedViewPage} selectedViewPage={selectedViewPage} />}
       </Box>
     </Box>
   )

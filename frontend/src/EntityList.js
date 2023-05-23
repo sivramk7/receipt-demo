@@ -26,9 +26,6 @@ import PropTypes from "prop-types";
  */
 
 function EntityList(props) {
-  useEffect(() => {
-    console.log("EntityList hilight changed");
-  }, [props.hilight]);
 
   return (
     <Box
@@ -42,7 +39,7 @@ function EntityList(props) {
         // We next sort the array.  Since the sorting is in place and
         // we don't want to update the original document, that is why
         // we take a copy of the array in the first place.
-        props.data.entities
+        props.entities
           .slice()
           .sort((a, b) => {
             if (a.type > b.type) return 1;
@@ -53,7 +50,7 @@ function EntityList(props) {
             const childEntities = entity.properties;
             return (
               <Entity
-                key={entity.id}
+                key={`${entity.id}-${entity.mentionText}`}
                 entity={entity}
                 hilight={props.hilight}
                 onInfoClick={props.onInfoClick}
@@ -72,6 +69,7 @@ EntityList.propTypes = {
   entityOnClick: PropTypes.func.isRequired,
   hilight: PropTypes.object,
   data: PropTypes.object.isRequired,
+  entities: PropTypes.array,
 };
 
 export default EntityList;
