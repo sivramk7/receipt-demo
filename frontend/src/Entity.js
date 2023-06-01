@@ -1,40 +1,10 @@
-/*
-# Copyright 2022, Google, Inc.
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-*/
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import React from "react";
-import {
-  Box,
-  Collapse,
-  List,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
 import PropTypes from "prop-types";
 
-/**
- * Display an Entity card for a given entity.
- * props
- * * entity - The entity to display
- * * hilight
- * * onClick - A callback invoked when the card is clicked.
- */
 function Entity(props) {
   const [showChildren, setShowChildren] = React.useState(false);
 
-  const cardRef = React.createRef(); // Create a ref for the containing card so that we can scroll it into view
+  const cardRef = React.createRef();
 
   function onClick(event) {
     event.stopPropagation();
@@ -43,12 +13,6 @@ function Entity(props) {
     }
   }
 
-  // Determine whether or not we should hilight.  The rules are:
-  // If no hilight is supplied then no hilight
-  // If a string, then compare it to the enetity id value
-  // If a boolean, then hilight based on the value of the boolean
-  // If an object, assume it is an entity and hilight based on the id comparison
-  //
   let hilight = false;
   if (props.hilight) {
     if (
@@ -63,14 +27,6 @@ function Entity(props) {
     }
   }
 
-  // When the entity has rendered, if this entity is hilighted, then scroll it into
-  // view within the containing list.
-  // useEffect(() => {
-  //   if (hilight && cardRef.current) {
-  //     cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  //   }
-  // });
-
   function toggleChildren(event) {
     event.stopPropagation();
     setShowChildren(!showChildren);
@@ -78,70 +34,45 @@ function Entity(props) {
 
   return (
     <>
-      <List>
-        <ListItemButton
+      <div className={`tw--list-reset ${hilight ? "tw--bg-blue-200" : ""} tw--w-full tw--items-center tw--space-y-4 tw--p-4`}>
+        <button
           onClick={toggleChildren}
           onMouseEnter={onClick}
           ref={cardRef}
-          style={{
-            backgroundColor: hilight ? "rgba(63, 81, 181, 0.1)" : "",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-          }}
+          className="tw--flex tw--flex-col tw--items-start tw--w-full tw--text-left"
         >
-          <ListItemText
-            style={{ fontWeight: "bold", overflowWrap: "break-word",
-            wordWrap: "break-word",
-            hyphens: "auto",
-            width: "95%" }}
-            primary={`${props.entity.type}:`}
-          />
+          <p
+            className="tw--font-bold tw--break-words tw--w-11/12"
+          >{`${props.entity.type}:`}</p>
           {props.children ? (
             <>
-              <ListItemText
-                style={{
-                  fontStyle: "italic",
-                  overflowWrap: "break-word",
-            wordWrap: "break-word",
-            hyphens: "auto",
-            width: "95%" 
-                }}
-                primary={`(${props.entity.mentionText})`}
-              />
-              {showChildren ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              <p
+                className="tw--italic tw--break-words tw--w-11/12"
+              >{`(${props.entity.mentionText})`}</p>
+              {showChildren ? "▲" : "▼"}
             </>
           ) : (
-            <ListItemText
-              style={{ overflowWrap: "break-word",
-              wordWrap: "break-word",
-              hyphens: "auto",
-              width: "95%"  }}
-              primary={props.entity.mentionText}
-            />
+            <p
+              className="tw--break-words tw--w-11/12"
+            >{props.entity.mentionText}</p>
           )}
-        </ListItemButton>
+        </button>
         {props.children && (
-          <>
-            <Collapse in={showChildren}>
-              <Box ml={5}>
-                {props.children.map((child, index) => (
-                  <Entity
-                    key={index}
-                    entity={child}
-                    onClick={props.onClick}
-                    hilight={props.hilight}
-                    style={{ marginLeft: "5%" }}
-                  />
-                ))}
-              </Box>
-            </Collapse>
-          </>
+          <div className={`${showChildren ? "" : "tw--hidden"} tw--ml-5`}>
+            {props.children.map((child, index) => (
+              <Entity
+                key={index}
+                entity={child}
+                onClick={props.onClick}
+                hilight={props.hilight}
+              />
+            ))}
+          </div>
         )}
-      </List>
+      </div>
     </>
   );
-} // Entity
+}
 
 Entity.propTypes = {
   onClick: PropTypes.func.isRequired,

@@ -13,26 +13,10 @@
 # limitations under the License.
 */
 import { useState } from "react";
-import {
-  AppBar,
-  Input,
-  Toolbar,
-  Box as Card,
-  Button,
-  Typography,
-  Tab,
-  Tabs,
-  Divider,
-  IconButton,
-  responsiveFontSizes,
-} from "@mui/material";
 import Search from "./Search";
 import Details from "./Details";
 import JSONPage from "./JSONPage";
 import DocAIView from "./DocAIView";
-import AboutDialog from "./About";
-import HelpIcon from "@mui/icons-material/Help";
-import { Select, MenuItem } from "@mui/material";
 import FilePreview from "./FilePreview";
 //import PropTypes from 'prop-types';
 
@@ -84,7 +68,7 @@ function DocAITopLevel(props) {
 
       // For local
         const request = await fetch("http://127.0.0.1:5000/upload/", {
-      // For prod
+        // For prod
         // const request = await fetch("/upload/", {
           method: "POST",
           body: formData,
@@ -98,36 +82,24 @@ function DocAITopLevel(props) {
       }
   }
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" style={{ flexGrow: 1, width: 70 }}>
-            Doc AI
-          </Typography>
-          <Select
-            value={fileType}
-            onChange={handleFileTypeChange}
-            sx={{
-              marginRight: "8px",
-              color: "white",
-              "& .MuiSvgIcon-root": {
-                color: "white",
-              },
-              "&:focus": {
-                outline: "none",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-            }}
-          >
-            <MenuItem value="invoice">Invoice</MenuItem>
-            <MenuItem value="expense">Expense</MenuItem>
-            <MenuItem value="t4-tax-document">T4 Tax document</MenuItem>
-            <MenuItem value="bank-statement">Bank Statement</MenuItem>
-          </Select>
-          <label htmlFor="contained-button-file">
-            <Input
+    <div className="tw--h-full tw--flex tw--flex-col">
+      <div className="tw--sticky tw--top-0">
+        <div className="tw--flex tw--justify-end tw--px-6 tw--py-3 tw--bg-blue-600 tw--text-white">
+          <div className="tw--flex tw--items-center">
+            <select
+              value={fileType}
+              onChange={handleFileTypeChange}
+              className="tw--mr-4 tw--text-black tw--border-none tw--outline-none"
+            >
+              <option value="invoice">Invoice</option>
+              <option value="expense">Expense</option>
+              <option value="t4-tax-document">T4 Tax document</option>
+              <option value="bank-statement">Bank Statement</option>
+            </select>
+            <label htmlFor="contained-button-file">
+              <span className=" tw--mr-4">Load Image/PDF</span>
+            </label>
+            <input
               style={{ display: "none" }}
               accept=".png,.jpg,.pdf,.jpeg"
               id="contained-button-file"
@@ -136,40 +108,26 @@ function DocAITopLevel(props) {
               disabled={loading}
               onChange={loadJson}
             />
-            <Button color="inherit" component="span">
-              Load Image/PDF
-            </Button>
-          </label>
-          <Button disabled={!uploadedFile} color="inherit" component="span" onClick={processFile}>
-            {loading ? "Processing..." : "Process"}
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <Tabs value={tabValue} onChange={tabChange}>
-        <Tab label="Document" />
-        <Tab label="JSON" />
-        <Tab label="Details" />
-        <Tab label="Search" />
-      </Tabs>
-      <Divider />
-      <Card
-        variant="outlined"
-        sx={{
-          flexGrow: 1,
-          flexShrink: 1,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+            <button disabled={!uploadedFile} className="tw--bg-white tw--text-black tw--px-2 tw--py-2" onClick={processFile}>
+              {loading ? "Processing..." : "Process"}
+            </button>
+          </div>
+        </div>
+        <div className="tw--flex tw--justify-around tw--py-2 tw--bg-blue-500 tw--text-white">
+          <button onClick={() => setTabValue(0)}>Document</button>
+          <button onClick={() => setTabValue(1)}>JSON</button>
+          <button onClick={() => setTabValue(2)}>Details</button>
+          <button onClick={() => setTabValue(3)}>Search</button>
+        </div>
+      </div>
+      <div className="tw--flex-grow tw--flex-shrink tw--overflow-hidden tw--flex tw--flex-col">
         {uploadedFile && !data && <FilePreview file={uploadedFile} />}
         {tabValue === 0 && <DocAIView data={data} />}
         {tabValue === 1 && <JSONPage data={data} />}
         {tabValue === 2 && <Details data={data} />}
         {tabValue === 3 && <Search data={data} />}
-      </Card>
-      <AboutDialog open={aboutOpen} close={() => setAboutOpen(false)} />
-    </Card>
+      </div>
+    </div>
   );
 } // DocAITopLevel
 

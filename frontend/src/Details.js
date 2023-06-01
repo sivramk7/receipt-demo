@@ -13,9 +13,7 @@
 # limitations under the License.
 */
 import { useState } from 'react';
-import { Box, Typography, TableContainer, TableHead, TableRow, TableCell, TableBody, Table, Paper, Card, CardContent, Stack, IconButton } from '@mui/material';
 import EntityInfoDialog from './EntityInfoDialog';
-import InfoIcon from '@mui/icons-material/Info';
 import PropTypes from 'prop-types';
 import NoData from './NoData';
 
@@ -33,110 +31,100 @@ function Details(props) {
   }
   const doc = props.data;
   return (
-    <Box sx={{ overflowY: "auto" }}>
-      <Paper sx={{ margin: "4px" }}>
-        <Stack direction="column" spacing={1}>
-          <Card variant="outlined">
-            <CardContent>
-              <Typography variant="h6">Details</Typography>
-              <Typography variant="body1" component="ul">
-                <li>Uri: {doc.uri ? doc.uri : "<none>"}</li>
-                <li>MimeType: {doc.mimeType}</li>
-                <li>Page Count: {doc.pages.length}</li>
-                <li>Human review status: {props.data.humanReviewStatus?props.data.humanReviewStatus.state:"undefined"}</li>
-              </Typography>
-            </CardContent>
-          </Card>
-          <Card variant="outlined">
-            <CardContent>
-              <Typography variant="h6">Pages</Typography>
-              <TableContainer>
-                <Table size="smalll">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Page Number</TableCell>
-                      <TableCell>Width</TableCell>
-                      <TableCell >Height</TableCell>
-                      <TableCell>Units</TableCell>
-                      <TableCell>Languages</TableCell>
-                      <TableCell>Blocks</TableCell>
-                      <TableCell>Paragraphs</TableCell>
-                      <TableCell>Lines</TableCell>
-                      <TableCell>Tokens</TableCell>
-                      <TableCell>Tables</TableCell>
-                      <TableCell>Form Fields</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {doc.pages.map((page) => (
-                      <TableRow key={page.pageNumber}>
-                        <TableCell>
-                          {page.pageNumber}
-                        </TableCell>
-                        <TableCell>{page.dimension?page.dimension.width:"undefined"}</TableCell>
-                        <TableCell>{page.dimension?page.dimension.height:"undefined"}</TableCell>
-                        <TableCell>{page.dimension?page.dimension.unit:"undefined"}</TableCell>
-                        <TableCell>{page.detectedLanguages?page.detectedLanguages.map((detectedLanguage) => (`${detectedLanguage.languageCode} `)):"undefined"}</TableCell>
-                        <TableCell>{page.blocks?page.blocks.length:"undefined"}</TableCell>
-                        <TableCell>{page.paragraphs?page.paragraphs.length:"undefined"}</TableCell>
-                        <TableCell>{page.lines?page.lines.length:"undefined"}</TableCell>
-                        <TableCell>{page.tokens?page.tokens.length:"undefined"}</TableCell>
-                        <TableCell>{page.tables?page.tables.length:"undefined"}</TableCell>
-                        <TableCell>{page.formFields?page.formFields.length:"undefined"}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </CardContent>
-          </Card>
-          {
-            //
-            // ENTITIES
-            //
-          }
-          <Card variant="outlined">
-            <CardContent>
-              <Typography variant="h6">Entities</Typography>
-              <TableContainer>
-                <Table size="smalll">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Type</TableCell>
-                      <TableCell>Confidence</TableCell>
-                      <TableCell>Text</TableCell>
-                      <TableCell>Normalized</TableCell>
-                      <TableCell>Properties</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {doc.entities.map((entity) => (
-                      <TableRow key={entity.id}>
-                        <TableCell>
-                          <IconButton color="primary" size="small" onClick={() => { setOpen(true); setEntity(entity) }}>
-                            <InfoIcon />
-                          </IconButton>
-                          {entity.id}
-                        </TableCell>
-                        <TableCell>{entity.type}</TableCell>
-                        <TableCell>{entity.confidence}</TableCell>
-                        <TableCell>{entity.mentionText}</TableCell>
-                        <TableCell>{entity.normalizedValue ? entity.normalizedValue.text : ""}</TableCell>
-                        <TableCell>{entity.properties ? entity.properties.length : 0}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </CardContent>
-          </Card>
-        </Stack>
-      </Paper>
+    <div className="tw--overflow-y-auto">
+      <div className="tw--m-1 tw--bg-white tw--shadow-md tw--rounded">
+        <div className="tw--flex tw--flex-col tw--space-y-2">
+          {/* Details Card */}
+          <div className="tw--p-4 tw--border tw--rounded">
+            <h6 className="tw--text-lg tw--font-bold">Details</h6>
+            <ul className="tw--text-base">
+              <li>Uri: {doc.uri ? doc.uri : "<none>"}</li>
+              <li>MimeType: {doc.mimeType}</li>
+              <li>Page Count: {doc.pages.length}</li>
+              <li>Human review status: {props.data.humanReviewStatus ? props.data.humanReviewStatus.state : "undefined"}</li>
+            </ul>
+          </div>
+          {/* Pages Card */}
+          <div className="tw--p-4 tw--border tw--rounded">
+            <h6 className="tw--text-lg tw--font-bold">Pages</h6>
+            <div className="tw--overflow-auto">
+              <table className="tw--min-w-full tw--divide-y tw--divide-gray-200">
+                <thead className="tw--bg-gray-50">
+                  <tr>
+                    <th>Page Number</th>
+                    <th>Width</th>
+                    <th>Height</th>
+                    <th>Units</th>
+                    <th>Languages</th>
+                    <th>Blocks</th>
+                    <th>Paragraphs</th>
+                    <th>Lines</th>
+                    <th>Tokens</th>
+                    <th>Tables</th>
+                    <th>Form Fields</th>
+                  </tr>
+                </thead>
+                <tbody className="tw--bg-white tw--divide-y tw--divide-gray-200">
+                  {doc.pages.map((page) => (
+                    <tr key={page.pageNumber}>
+                      <td>{page.pageNumber}</td>
+                      <td>{page.dimension ? page.dimension.width : "undefined"}</td>
+                      <td>{page.dimension ? page.dimension.height : "undefined"}</td>
+                      <td>{page.dimension ? page.dimension.unit : "undefined"}</td>
+                      <td>{page.detectedLanguages ? page.detectedLanguages.map((detectedLanguage) => (`${detectedLanguage.languageCode} `)) : "undefined"}</td>
+                      <td>{page.blocks ? page.blocks.length : "undefined"}</td>
+                      <td>{page.paragraphs ? page.paragraphs.length : "undefined"}</td>
+                      <td>{page.lines ? page.lines.length : "undefined"}</td>
+                      <td>{page.tokens ? page.tokens.length : "undefined"}</td>
+                      <td>{page.tables ? page.tables.length : "undefined"}</td>
+                      <td>{page.formFields ? page.formFields.length : "undefined"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {/* Entities Card */}
+          <div className="tw--p-4 tw--border tw--rounded">
+            <h6 className="tw--text-lg tw--font-bold">Entities</h6>
+            <div className="tw--overflow-auto">
+              <table className="tw--min-w-full tw--divide-y tw--divide-gray-200">
+                <thead className="tw--bg-gray-50">
+                  <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Confidence</th>
+                    <th>Text</th>
+                    <th>Normalized</th>
+                    <th>Properties</th>
+                  </tr>
+                </thead>
+                <tbody className="tw--bg-white tw--divide-y tw--divide-gray-200">
+                  {doc.entities.map((entity, index) => (
+                    <tr key={`${entity.id}-${entity.mentionText}-${index}`}>
+                      <td>
+                        <button className="tw--text-primary tw--text-sm tw--focus:outline-none" onClick={() => { setOpen(true); setEntity(entity) }}>
+                          <i className="material-icons">I</i>
+                        </button>
+                        {entity.id}
+                      </td>
+                      <td>{entity.type}</td>
+                      <td>{entity.confidence}</td>
+                      <td>{entity.mentionText}</td>
+                      <td>{entity.normalizedValue ? entity.normalizedValue.text : ""}</td>
+                      <td>{entity.properties ? entity.properties.length : 0}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
       <EntityInfoDialog open={open} entity={entity} close={() => { setOpen(false) }} />
-    </Box >
-  )
-} // Details
+  </div>
+  );
+}
 
 Details.propTypes = {
   'data': PropTypes.object.isRequired

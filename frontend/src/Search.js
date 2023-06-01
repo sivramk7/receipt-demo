@@ -1,26 +1,13 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { useState, useRef } from "react";
 
 function Chat(props) {
   return props.data ? (
-    <>
-      <Card>
-        <CardContent>
-          {props.data.role} - {props.data.content}
-        </CardContent>
-      </Card>
-    </>
-  ) : (
-    <></>
-  );
+    <div className="tw--bg-white tw--overflow-hidden tw--shadow tw--rounded-lg">
+      <div className="tw--px-4 tw--py-5 tw--sm:p-6">
+        {props.data.role} - {props.data.content}
+      </div>
+    </div>
+  ) : null;
 }
 
 function Search(props) {
@@ -78,49 +65,44 @@ function Search(props) {
     submitPromptData();
   }
 
-  return !ocr_data ? (
-    <></>
-  ) : (
-    <Card sx={{ overflow: "auto" }}>
-      <CardContent>
-        <Stack direction="row">
-          <Typography variant="h5">Assistant</Typography>
-          <Button onClick={clearChats}>Clear Chat</Button>
-        </Stack>
-        {chats.map((chat, index) => {
-          return (
-            <>
-              <Chat keys={index} data={chat} />
-            </>
-          );
-        })}
-        {tempPrompt && (
-          <>
-            <Chat keys="input" data={tempPrompt} />
-          </>
-        )}
-        <Box sx={{ width: "100%" }}>
-          <Stack direction="row">
-            <TextField
+  return !ocr_data ? null : (
+    <div className="tw--bg-white tw--overflow-hidden tw--shadow tw--rounded-lg">
+      <div className="tw--px-4 tw--py-5 tw--sm:p-6">
+        <div className="tw--flex tw--items-center tw--justify-between">
+          <h3 className="tw--text-lg tw--leading-6 tw--font-medium tw--text-gray-900">Assistant</h3>
+          <button
+            onClick={clearChats}
+            className="tw--ml-3 tw--bg-blue-500 tw--hover:bg-blue-700 tw--text-white tw--font-bold tw--py-2 tw--px-4 tw--rounded"
+          >
+            Clear Chat
+          </button>
+        </div>
+        {chats.map((chat, index) => (
+          <Chat key={index} data={chat} />
+        ))}
+        {tempPrompt && <Chat key="input" data={tempPrompt} />}
+        <div className="tw--mt-5">
+          <div className="tw--flex">
+            <input
               ref={textFieldRef}
               value={prompt}
-              sx={{ width: "100%" }}
-              id="outlined-multiline-flexible"
+              className="tw--shadow tw--appearance-none tw--border tw--rounded tw--w-full tw--py-2 tw--px-3 tw--text-gray-700 tw--leading-tight tw--focus:outline-none tw--focus:shadow-outline"
+              id="prompt"
+              type="text"
+              placeholder="Enter prompt here: (Ctrl+Enter to send)"
               onChange={onPromptChange}
               onKeyDown={onSendKeyDown}
-              label="Enter prompt here: (Ctrl+Enter to send)"
-              multiline
             />
-            <Button
+            <button
               onClick={(event) => sendPromptData(event)}
-              variant="contained"
+              className="tw--ml-3 tw--bg-blue-500 tw--hover:bg-blue-700 tw--text-white tw--font-bold tw--py-2 tw--px-4 tw--rounded"
             >
               Send
-            </Button>
-          </Stack>
-        </Box>
-      </CardContent>
-    </Card>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

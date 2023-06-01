@@ -149,7 +149,7 @@ function DrawDocument(props) {
   const imageSize = imageScale(svgContainerSize, props.imageSize)
   const imageSizeSmaller = {width: Math.max(imageSize.width-10,0), height: Math.max(imageSize.height-10,0), x: imageSize.x +5, y: imageSize.y +5}
   return (
-    <Box ref={ref1} style={{ flexGrow: 1, flexShrink: 1, width: "100%", height: "100%", backgroundColor: "purple", overflow: "hidden" }}>
+    <div ref={ref1} className="tw--flex tw--flex-grow tw--flex-shrink tw--w-full tw--h-full tw--bg-purple tw--overflow-hidden">
       <ReactSVGPanZoom
         ref={viewerRef}
         miniatureProps={{ position: POSITION_NONE }}
@@ -161,7 +161,7 @@ function DrawDocument(props) {
       >
         <svg xmlns="http://www.w3.org/2000/svg"
           width={imageSize.width} height={imageSize.height}
-          style={{ borderColor: "lightgrey", borderStyle: "solid", "borderWidth": "1px" }}>
+          className="tw--border-lightgrey tw--border-solid tw--border">
           <image
             width={imageSizeSmaller.width} height={imageSizeSmaller.height}
             x={imageSizeSmaller.x} y={imageSizeSmaller.y}
@@ -169,10 +169,10 @@ function DrawDocument(props) {
           />
           {
             // Draw an entity (an SVG Polygon) hilighter for each of the entities that we find.
-            props.entities.map(entity => {
+            props.entities.map((entity, index) => {
               const childEntities = entity.properties;
               return <EntityHilight
-                key={`${entity.id}-${entity.mentionText}`}
+                key={`${entity.id}-${entity.mentionText}-${index}`}
                 imageSize={imageSizeSmaller}
                 entity={entity}
                 onClick={entityClick}
@@ -182,9 +182,9 @@ function DrawDocument(props) {
           }
         </svg>
       </ReactSVGPanZoom>
-    </Box>
+    </div>
   )
-} // DrawDocument
+} 
 
 DrawDocument.propTypes = {
   'imageData': PropTypes.string.isRequired,
