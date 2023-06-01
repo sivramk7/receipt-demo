@@ -82,14 +82,14 @@ function DocAITopLevel(props) {
       }
   }
   return (
-    <div className="tw--h-full tw--flex tw--flex-col">
-      <div className="tw--sticky tw--top-0">
-        <div className="tw--flex tw--justify-end tw--px-6 tw--py-3 tw--bg-blue-600 tw--text-white">
-          <div className="tw--flex tw--items-center">
+    <div className="h-full flex flex-col">
+      <div className="sticky top-0">
+        <div className="flex justify-end px-6 py-3 bg-blue-600 text-white">
+          <div className="flex items-center">
             <select
               value={fileType}
               onChange={handleFileTypeChange}
-              className="tw--mr-4 tw--text-black tw--border-none tw--outline-none"
+              className="mr-4 text-black border-none outline-none"
             >
               <option value="invoice">Invoice</option>
               <option value="expense">Expense</option>
@@ -97,7 +97,7 @@ function DocAITopLevel(props) {
               <option value="bank-statement">Bank Statement</option>
             </select>
             <label htmlFor="contained-button-file">
-              <span className=" tw--mr-4">Load Image/PDF</span>
+              <span className=" mr-4">Load Image/PDF</span>
             </label>
             <input
               style={{ display: "none" }}
@@ -108,19 +108,19 @@ function DocAITopLevel(props) {
               disabled={loading}
               onChange={loadJson}
             />
-            <button disabled={!uploadedFile} className="tw--bg-white tw--text-black tw--px-2 tw--py-2" onClick={processFile}>
+            <button disabled={!uploadedFile} className="bg-white text-black px-2 py-2" onClick={processFile}>
               {loading ? "Processing..." : "Process"}
             </button>
           </div>
         </div>
-        <div className="tw--flex tw--justify-around tw--py-2 tw--bg-blue-500 tw--text-white">
+        <div className="flex justify-around py-2 bg-blue-500 text-white">
           <button onClick={() => setTabValue(0)}>Document</button>
           <button onClick={() => setTabValue(1)}>JSON</button>
           <button onClick={() => setTabValue(2)}>Details</button>
           <button onClick={() => setTabValue(3)}>Search</button>
         </div>
       </div>
-      <div className="tw--flex-grow tw--flex-shrink tw--overflow-hidden tw--flex tw--flex-col">
+      <div className="flex-grow flex-shrink overflow-hidden flex flex-col">
         {uploadedFile && !data && <FilePreview file={uploadedFile} />}
         {tabValue === 0 && <DocAIView data={data} />}
         {tabValue === 1 && <JSONPage data={data} />}

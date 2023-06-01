@@ -6,7 +6,7 @@ function EntityList(props) {
 
   return (
     <div
-      className="tw--h-full tw--overflow-y-auto"
+      className="h-full overflow-y-auto"
     >
       {
         props.entities

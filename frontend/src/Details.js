@@ -31,13 +31,13 @@ function Details(props) {
   }
   const doc = props.data;
   return (
-    <div className="tw--overflow-y-auto">
-      <div className="tw--m-1 tw--bg-white tw--shadow-md tw--rounded">
-        <div className="tw--flex tw--flex-col tw--space-y-2">
+    <div className="overflow-y-auto">
+      <div className="m-1 bg-white shadow-md rounded">
+        <div className="flex flex-col space-y-2">
           {/* Details Card */}
-          <div className="tw--p-4 tw--border tw--rounded">
-            <h6 className="tw--text-lg tw--font-bold">Details</h6>
-            <ul className="tw--text-base">
+          <div className="p-4 border rounded">
+            <h6 className="text-lg font-bold">Details</h6>
+            <ul className="text-base">
               <li>Uri: {doc.uri ? doc.uri : "<none>"}</li>
               <li>MimeType: {doc.mimeType}</li>
               <li>Page Count: {doc.pages.length}</li>
@@ -45,11 +45,11 @@ function Details(props) {
             </ul>
           </div>
           {/* Pages Card */}
-          <div className="tw--p-4 tw--border tw--rounded">
-            <h6 className="tw--text-lg tw--font-bold">Pages</h6>
-            <div className="tw--overflow-auto">
-              <table className="tw--min-w-full tw--divide-y tw--divide-gray-200">
-                <thead className="tw--bg-gray-50">
+          <div className="p-4 border rounded">
+            <h6 className="text-lg font-bold">Pages</h6>
+            <div className="overflow-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
                     <th>Page Number</th>
                     <th>Width</th>
@@ -64,7 +64,7 @@ function Details(props) {
                     <th>Form Fields</th>
                   </tr>
                 </thead>
-                <tbody className="tw--bg-white tw--divide-y tw--divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200">
                   {doc.pages.map((page) => (
                     <tr key={page.pageNumber}>
                       <td>{page.pageNumber}</td>
@@ -85,11 +85,11 @@ function Details(props) {
             </div>
           </div>
           {/* Entities Card */}
-          <div className="tw--p-4 tw--border tw--rounded">
-            <h6 className="tw--text-lg tw--font-bold">Entities</h6>
-            <div className="tw--overflow-auto">
-              <table className="tw--min-w-full tw--divide-y tw--divide-gray-200">
-                <thead className="tw--bg-gray-50">
+          <div className="p-4 border rounded">
+            <h6 className="text-lg font-bold">Entities</h6>
+            <div className="overflow-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
                     <th>ID</th>
                     <th>Type</th>
@@ -99,11 +99,11 @@ function Details(props) {
                     <th>Properties</th>
                   </tr>
                 </thead>
-                <tbody className="tw--bg-white tw--divide-y tw--divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200">
                   {doc.entities.map((entity, index) => (
                     <tr key={`${entity.id}-${entity.mentionText}-${index}`}>
                       <td>
-                        <button className="tw--text-primary tw--text-sm tw--focus:outline-none" onClick={() => { setOpen(true); setEntity(entity) }}>
+                        <button className="text-primary text-sm focus:outline-none" onClick={() => { setOpen(true); setEntity(entity) }}>
                           <i className="material-icons">I</i>
                         </button>
                         {entity.id}

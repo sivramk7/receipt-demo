@@ -2,7 +2,7 @@
 // tailwind.config.js
 module.exports = {
   mode: 'jit', // enable Just-In-Time compiler
-  prefix: 'tw--', // add your preferred prefix here
+  prefix: '', // add your preferred prefix here
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   darkMode: false, // or 'media' or 'class'
   theme: {

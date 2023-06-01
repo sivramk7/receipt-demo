@@ -2,8 +2,8 @@ import { useState, useRef } from "react";
 
 function Chat(props) {
   return props.data ? (
-    <div className="tw--bg-white tw--overflow-hidden tw--shadow tw--rounded-lg">
-      <div className="tw--px-4 tw--py-5 tw--sm:p-6">
+    <div className="bg-white overflow-hidden shadow rounded-lg">
+      <div className="px-4 py-5 sm:p-6">
         {props.data.role} - {props.data.content}
       </div>
     </div>
@@ -66,13 +66,13 @@ function Search(props) {
   }
 
   return !ocr_data ? null : (
-    <div className="tw--bg-white tw--overflow-hidden tw--shadow tw--rounded-lg">
-      <div className="tw--px-4 tw--py-5 tw--sm:p-6">
-        <div className="tw--flex tw--items-center tw--justify-between">
-          <h3 className="tw--text-lg tw--leading-6 tw--font-medium tw--text-gray-900">Assistant</h3>
+    <div className="bg-white overflow-hidden shadow rounded-lg">
+      <div className="px-4 py-5 sm:p-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg leading-6 font-medium text-gray-900">Assistant</h3>
           <button
             onClick={clearChats}
-            className="tw--ml-3 tw--bg-blue-500 tw--hover:bg-blue-700 tw--text-white tw--font-bold tw--py-2 tw--px-4 tw--rounded"
+            className="ml-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Clear Chat
           </button>
@@ -81,12 +81,12 @@ function Search(props) {
           <Chat key={index} data={chat} />
         ))}
         {tempPrompt && <Chat key="input" data={tempPrompt} />}
-        <div className="tw--mt-5">
-          <div className="tw--flex">
+        <div className="mt-5">
+          <div className="flex">
             <input
               ref={textFieldRef}
               value={prompt}
-              className="tw--shadow tw--appearance-none tw--border tw--rounded tw--w-full tw--py-2 tw--px-3 tw--text-gray-700 tw--leading-tight tw--focus:outline-none tw--focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="prompt"
               type="text"
               placeholder="Enter prompt here: (Ctrl+Enter to send)"
@@ -95,7 +95,7 @@ function Search(props) {
             />
             <button
               onClick={(event) => sendPromptData(event)}
-              className="tw--ml-3 tw--bg-blue-500 tw--hover:bg-blue-700 tw--text-white tw--font-bold tw--py-2 tw--px-4 tw--rounded"
+              className="ml-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
               Send
             </button>

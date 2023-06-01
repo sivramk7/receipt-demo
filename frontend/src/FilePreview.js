@@ -7,19 +7,19 @@ function FilePreview(props) {
   const blob = URL.createObjectURL(file);
 
   return (
-    <div className="tw--flex tw--flex-grow tw--flex-shrink tw--overflow-auto tw--justify-center tw--items-center tw--relative tw--w-full tw--h-full">
+    <div className="flex flex-grow flex-shrink overflow-auto justify-center items-center relative w-full h-full">
       {file.name.toLowerCase().endsWith('.pdf') ? (
         <embed
           src={blob}
           type="application/pdf"
-          className="tw--w-full tw--h-full tw--object-contain"
+          className="w-full h-full object-contain"
         />
       ) : (
-        <div className="tw--w-full tw--h-full tw--flex tw--justify-center tw--items-center">
+        <div className="w-full h-full flex justify-center items-center">
           <ImagePanZoomRotate
             image={blob}
             alt="uploaded document"
-            className="tw--object-contain"
+            className="object-contain"
           />
         </div>
       )}

@@ -39,7 +39,6 @@
  * 
  * DocAIView is the primary consumer of this component.
  */
-import { Box } from '@mui/material';
 import EntityHilight from './EntityHilight';
 import { useRef, useState, useEffect } from 'react';
 import { INITIAL_VALUE, ReactSVGPanZoom, TOOL_NONE, POSITION_NONE } from 'react-svg-pan-zoom';
@@ -149,7 +148,7 @@ function DrawDocument(props) {
   const imageSize = imageScale(svgContainerSize, props.imageSize)
   const imageSizeSmaller = {width: Math.max(imageSize.width-10,0), height: Math.max(imageSize.height-10,0), x: imageSize.x +5, y: imageSize.y +5}
   return (
-    <div ref={ref1} className="tw--flex tw--flex-grow tw--flex-shrink tw--w-full tw--h-full tw--bg-purple tw--overflow-hidden">
+    <div ref={ref1} className="flex flex-grow flex-shrink w-full h-full bg-purple overflow-hidden">
       <ReactSVGPanZoom
         ref={viewerRef}
         miniatureProps={{ position: POSITION_NONE }}
@@ -161,7 +160,7 @@ function DrawDocument(props) {
       >
         <svg xmlns="http://www.w3.org/2000/svg"
           width={imageSize.width} height={imageSize.height}
-          className="tw--border-lightgrey tw--border-solid tw--border">
+          className="border-lightgrey border-solid border">
           <image
             width={imageSizeSmaller.width} height={imageSizeSmaller.height}
             x={imageSizeSmaller.x} y={imageSizeSmaller.y}

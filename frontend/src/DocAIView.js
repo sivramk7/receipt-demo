@@ -4,8 +4,6 @@ import PageSelector from './PageSelector';
 import NoData from './NoData';
 import PropTypes from 'prop-types';
 import EntityList from './EntityList';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 function DocAIView(props) {
   const [hilight, setHilight] = useState(null);
@@ -63,18 +61,18 @@ function DocAIView(props) {
   }
 
   return (
-    <div className="tw--flex tw--w-full tw--h-full">
-      <div className="tw--max-w-1/5">
-        <div className="tw--flex tw--justify-center tw--items-center tw--px-6" onClick={() => setEntityListOpen(!entityListOpen)}>
-          <button className="tw--text-inherit">
-            {entityListOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
+    <div className="flex w-full h-full">
+      <div className="max-w-1/5">
+        <div className="flex justify-center items-center px-6" onClick={() => setEntityListOpen(!entityListOpen)}>
+          <button className="text-inherit">
+            {entityListOpen ? "<" : ">"}
           </button>
         </div>
         {entityListOpen && (
           <EntityList data={props.data} entities={entities} entityOnClick={entityOnClick} hilight={hilight} />
         )}
       </div>
-      <div ref={ref1} className="tw--flex-grow tw--relative tw--min-w-0">
+      <div ref={ref1} className="flex-grow relative min-w-0">
         <DrawDocument
           imageData={imageData}
           imageSize={imageSize}
@@ -85,9 +83,9 @@ function DocAIView(props) {
         />
       </div>
       <div>
-        <div className="tw--flex tw--justify-center tw--items-center" onClick={() => setPageSelectorOpen(!pageSelectorOpen)}>
-          <button className="tw--text-inherit">
-            {pageSelectorOpen ? <ArrowForwardIosIcon /> : <ArrowBackIosIcon />}
+        <div className="flex justify-center items-center" onClick={() => setPageSelectorOpen(!pageSelectorOpen)}>
+          <button className="text-inherit">
+            {pageSelectorOpen ? "<" : ">"}
           </button>
         </div>
         {pageSelectorOpen && <PageSelector data={props.data} setSelectedViewPage={setSelectedViewPage} selectedViewPage={selectedViewPage} />}

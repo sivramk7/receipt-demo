@@ -15,18 +15,18 @@ function PageSelector(props) {
 
   const [value, setValue] = useState(0);  // Currently selected tab (page/image)
   return (
-    <div className="tw--flex tw--flex-col tw--bg-gray-200">
+    <div className="flex flex-col bg-gray-200">
       {
         props.data.pages.map((page, index) => {
           let imageData = `data:image/png;base64,${page.image.content}`
           return (
             <div
               key={index}
-              className={`tw--p-4 ${value === index ? 'tw--bg-blue-500' : ''}`}
+              className={`p-4 ${value === index ? 'bg-blue-500' : ''}`}
               onClick={() => pageChange(index)}
             >
               <div>
-                <img src={imageData} className="tw--w-20" alt="page" />
+                <img src={imageData} className="w-20" alt="page" />
                 <br/>
                 {page.pageNumber}
               </div>

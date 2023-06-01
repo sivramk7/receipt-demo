@@ -12,18 +12,18 @@ function EntityInfoDialog(props) {
 
   return (
     <div 
-      className={`tw--fixed tw--inset-0 tw--z-50 tw--overflow-y-auto tw--bg-white ${props.open ? 'tw--block' : 'tw--hidden'}`} 
+      className={`fixed inset-0 z-50 overflow-y-auto bg-white ${props.open ? 'block' : 'hidden'}`} 
       style={{ backdropFilter: 'blur(5px)' }}
     >
-      <div className="tw--my-20 tw--mx-auto tw--bg-white tw--rounded-lg tw--w-full tw--max-w-2xl">
-        <div className="tw--px-6 tw--py-4">
-          <h2 className="tw--text-xl tw--font-bold">Entity Details: {props.entity.type}</h2>
-          <div className="tw--mt-4 tw--border tw--border-gray-200 tw--rounded-lg tw--overflow-x-auto">
-            <pre className="tw--p-4">{JSON.stringify(props.entity, null, 2)}</pre>
+      <div className="my-20 mx-auto bg-white rounded-lg w-full max-w-2xl">
+        <div className="px-6 py-4">
+          <h2 className="text-xl font-bold">Entity Details: {props.entity.type}</h2>
+          <div className="mt-4 border border-gray-200 rounded-lg overflow-x-auto">
+            <pre className="p-4">{JSON.stringify(props.entity, null, 2)}</pre>
           </div>
         </div>
-        <div className="tw--border-t tw--border-gray-200 tw--px-4 tw--py-3 tw--flex tw--justify-end">
-          <button className="tw--px-4 tw--py-2 tw--rounded tw--bg-blue-500 tw--text-white tw--font-bold tw--hover:bg-blue-700" onClick={handleClose}>Close</button>
+        <div className="border-t border-gray-200 px-4 py-3 flex justify-end">
+          <button className="px-4 py-2 rounded bg-blue-500 text-white font-bold hover:bg-blue-700" onClick={handleClose}>Close</button>
         </div>
       </div>
     </div>

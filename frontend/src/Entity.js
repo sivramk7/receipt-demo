@@ -34,31 +34,31 @@ function Entity(props) {
 
   return (
     <>
-      <div className={`tw--list-reset ${hilight ? "tw--bg-blue-200" : ""} tw--w-full tw--items-center tw--space-y-4 tw--p-4`}>
+      <div className={`list-reset ${hilight ? "bg-blue-200" : ""} w-full items-center space-y-4 p-4`}>
         <button
           onClick={toggleChildren}
           onMouseEnter={onClick}
           ref={cardRef}
-          className="tw--flex tw--flex-col tw--items-start tw--w-full tw--text-left"
+          className="flex flex-col items-start w-full text-left"
         >
           <p
-            className="tw--font-bold tw--break-words tw--w-11/12"
+            className="font-bold break-words w-11/12"
           >{`${props.entity.type}:`}</p>
           {props.children ? (
             <>
               <p
-                className="tw--italic tw--break-words tw--w-11/12"
+                className="italic break-words w-11/12"
               >{`(${props.entity.mentionText})`}</p>
               {showChildren ? "▲" : "▼"}
             </>
           ) : (
             <p
-              className="tw--break-words tw--w-11/12"
+              className="break-words w-11/12"
             >{props.entity.mentionText}</p>
           )}
         </button>
         {props.children && (
-          <div className={`${showChildren ? "" : "tw--hidden"} tw--ml-5`}>
+          <div className={`${showChildren ? "" : "hidden"} ml-5`}>
             {props.children.map((child, index) => (
               <Entity
                 key={index}

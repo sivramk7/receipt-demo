@@ -7,8 +7,8 @@ function JSONPage(props) {
   }
 
   return (
-    <div className="tw--flex tw--flex-grow tw--overflow-y-auto">
-      <div className="tw--m-4 tw--h-full tw--border tw--border-solid tw--rounded">
+    <div className="flex flex-grow overflow-y-auto">
+      <div className="m-4 h-full border border-solid rounded">
         <pre>{JSON.stringify(props.data, null, 2)}</pre>
       </div>
     </div>
