@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import ImagePanZoomRotate from 'react-image-pan-zoom-rotate';
 
@@ -8,45 +7,23 @@ function FilePreview(props) {
   const blob = URL.createObjectURL(file);
 
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        flexShrink: 1,
-        overflow: 'auto',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-      }}
-    >
+    <div className="tw--flex tw--flex-grow tw--flex-shrink tw--overflow-auto tw--justify-center tw--items-center tw--relative tw--w-full tw--h-full">
       {file.name.toLowerCase().endsWith('.pdf') ? (
         <embed
           src={blob}
           type="application/pdf"
-          width="100%"
-          height="100%"
-          style={{ objectFit: 'contain' }}
+          className="tw--w-full tw--h-full tw--object-contain"
         />
       ) : (
-        <Box
-          sx={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+        <div className="tw--w-full tw--h-full tw--flex tw--justify-center tw--items-center">
           <ImagePanZoomRotate
             image={blob}
             alt="uploaded document"
-            style={{ objectFit: 'contain' }}
+            className="tw--object-contain"
           />
-        </Box>
+        </div>
       )}
-    </Box>
+    </div>
   );
 }
 

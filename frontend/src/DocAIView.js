@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import DrawDocument from "./DrawDocument"
 import PageSelector from './PageSelector';
 import NoData from './NoData';
-import { Box, IconButton } from '@mui/material';
 import PropTypes from 'prop-types';
 import EntityList from './EntityList';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -45,7 +44,7 @@ function DocAIView(props) {
     };
 
     updateContainerSize();
-  }, [entityListOpen, pageSelectorOpen]);
+  }, [entityListOpen, pageSelectorOpen, selectedViewPage]);
 
   if (!props.data) {
     return (<NoData />)
@@ -64,18 +63,18 @@ function DocAIView(props) {
   }
 
   return (
-    <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
-      <Box sx={{ maxWidth: "25%" }}>
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', paddingLeft: "6px" }} onClick={() => setEntityListOpen(!entityListOpen)}>
-          <IconButton edge="start" color="inherit" aria-label="menu" >
+    <div className="tw--flex tw--w-full tw--h-full">
+      <div className="tw--max-w-1/5">
+        <div className="tw--flex tw--justify-center tw--items-center tw--px-6" onClick={() => setEntityListOpen(!entityListOpen)}>
+          <button className="tw--text-inherit">
             {entityListOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
-          </IconButton>
-        </Box>
+          </button>
+        </div>
         {entityListOpen && (
           <EntityList data={props.data} entities={entities} entityOnClick={entityOnClick} hilight={hilight} />
         )}
-      </Box>
-      <Box ref={ref1} sx={{ flexGrow: 1, position: "relative", minWidth: "100" }}>
+      </div>
+      <div ref={ref1} className="tw--flex-grow tw--relative tw--min-w-0">
         <DrawDocument
           imageData={imageData}
           imageSize={imageSize}
@@ -84,18 +83,18 @@ function DocAIView(props) {
           entityOnClick={entityOnClick}
           containerSize={containerSize}
         />
-      </Box>
-      <Box>
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => setPageSelectorOpen(!pageSelectorOpen)}>
-          <IconButton edge="end" color="inherit" aria-label="menu" >
+      </div>
+      <div>
+        <div className="tw--flex tw--justify-center tw--items-center" onClick={() => setPageSelectorOpen(!pageSelectorOpen)}>
+          <button className="tw--text-inherit">
             {pageSelectorOpen ? <ArrowForwardIosIcon /> : <ArrowBackIosIcon />}
-          </IconButton>
-        </Box>
+          </button>
+        </div>
         {pageSelectorOpen && <PageSelector data={props.data} setSelectedViewPage={setSelectedViewPage} selectedViewPage={selectedViewPage} />}
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
-} // DocAIView
+}
 
 DocAIView.propTypes = {
   'data': PropTypes.object
