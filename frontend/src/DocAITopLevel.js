@@ -18,6 +18,7 @@ import Details from "./Details";
 import JSONPage from "./JSONPage";
 import DocAIView from "./DocAIView";
 import FilePreview from "./FilePreview";
+import EditUI from "./EditUI/EditUI";
 //import PropTypes from 'prop-types';
 
 /**
@@ -118,14 +119,16 @@ function DocAITopLevel(props) {
           <button onClick={() => setTabValue(1)}>JSON</button>
           <button onClick={() => setTabValue(2)}>Details</button>
           <button onClick={() => setTabValue(3)}>Search</button>
+          <button onClick={() => setTabValue(4)}>Edit</button>
         </div>
       </div>
-      <div className="flex-grow flex-shrink overflow-hidden flex flex-col">
+      <div className="flex-grow flex-shrink overflow-y-auto flex flex-col">
         {uploadedFile && !data && <FilePreview file={uploadedFile} />}
         {tabValue === 0 && <DocAIView data={data} />}
         {tabValue === 1 && <JSONPage data={data} />}
         {tabValue === 2 && <Details data={data} />}
         {tabValue === 3 && <Search data={data} />}
+        {tabValue === 4 && <EditUI/>}
       </div>
     </div>
   );

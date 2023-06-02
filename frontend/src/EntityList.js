@@ -3,7 +3,6 @@ import Entity from "./Entity";
 import PropTypes from "prop-types";
 
 function EntityList(props) {
-
   return (
     <div
       className="h-full overflow-y-auto"

@@ -8,6 +8,21 @@ from google.cloud import documentai_v1 as documentai
 from google.oauth2 import service_account
 from flask_cors import CORS
 
+
+# Edit By Sayed
+import time
+from pdf2image import convert_from_path
+import io
+from flask import send_file
+import os
+from google.cloud import vision
+from PIL import Image
+from threading import Thread
+from io import BytesIO
+import base64
+# End Edit By Sayed
+
+
 openai.api_key = config("OPENAI_KEY")
 openai.organization = config("OPENAI_ORG")
 app = Flask(__name__)
@@ -21,6 +36,16 @@ PROCESSORS = {
 }
 
 m = []
+
+# Edit By Sayed
+dir_path = os.path.dirname(os.path.realpath(__file__))
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=dir_path + "/t4-form-sample-project-b2e0ce2a20d8.json"
+
+client = vision.ImageAnnotatorClient()
+glabeldata = None
+iou_thresh = 0.6
+
+# End Edit By Sayed
 
 
 @app.route("/search/", methods=["POST"])
@@ -92,6 +117,218 @@ def upload_file():
 
     # return the response as JSON
     return jsonify(response)
+
+
+# Edit By Sayed
+def detect_text():
+    global client, glabeldata
+
+    if glabeldata is None:
+        return
+    if glabeldata["process"]:
+        return
+
+    print("\nGougle Cloud Response")
+    # path = glabeldata["name"]
+    data = glabeldata["data"]
+    new_data = []
+    for d in data:
+        path = d["filename"]
+        with open(path, 'rb') as image_file:
+            content = image_file.read()
+
+        image = vision.Image(content=content)
+
+        response = client.text_detection(image=image)
+        texts = response.text_annotations
+
+        textdata = []
+        print("\tFile : ", path)
+        for text in texts:
+            vertices = [[vertex.x,vertex.y] for vertex in text.bounding_poly.vertices]
+
+            if vertices.__len__() > 3:
+                x = min([a for [a, _] in vertices])
+                y = min([a for [_, a] in vertices])
+                w = max([a for [a, _] in vertices]) - x
+                h = max([a for [_, a] in vertices]) - y
+                textdata.append({"text" : text.description, "rect" : [x, y, w, h]})
+                print("\trect : ", [x, y, w, h], "\ttext : ", text.description)
+        new_data.append({"filename" : path, "textdata": textdata})
+
+    glabeldata["data"] = new_data
+    glabeldata["process"] = True
+
+    print("gcloud processed")
+
+
+def get_iou(bb1, bb2):
+    """
+    :param bb1: x, y, w, h : source box (master)
+    :param bb2: x, y, w, h : target box (slave)
+    :return:
+    """
+    assert bb1[0] < bb1[0] + bb1[2]
+    assert bb1[1] < bb1[1] + bb1[3]
+    assert bb2[0] < bb2[0] + bb2[2]
+    assert bb2[1] < bb2[1] + bb2[3]
+
+    # determine the coordinates of the intersection rectangle
+    x_left = max(bb1[0], bb2[0])
+    y_top = max(bb1[1], bb2[1])
+    x_right = min(bb1[0] + bb1[2], bb2[0] + bb2[2])
+    y_bottom = min(bb1[1] + bb1[3], bb2[1] + bb2[3])
+
+    if x_right < x_left or y_bottom < y_top:
+        return 0.0
+
+    # The intersection of two axis-aligned bounding boxes is always an
+    # axis-aligned bounding box
+    intersection_area = (x_right - x_left) * (y_bottom - y_top)
+
+    # compute the area of both AABBs
+    bb1_area = bb1[2] * bb1[3]
+    bb2_area = bb2[2] * bb2[3]
+
+    # compute the intersection over union by taking the intersection
+    # area and dividing it by the sum of prediction + ground-truth
+    # areas - the interesection area
+    iou = intersection_area / float(bb2_area)
+    assert iou >= 0.0
+    assert iou <= 1.0
+    return iou
+
+
+def resize_image(image, swidth):
+    (wimage, himage) = image.size
+
+    if wimage > swidth:
+        # it has to resize the image
+        scale = wimage / swidth
+        image = image.resize((swidth, int(himage / scale)))
+
+    return image
+
+
+@app.route('/upload-label', methods=['POST'])
+def upload_label():
+    global glabeldata, iou_thresh
+
+    try:
+        data = request.get_json()
+
+        while not glabeldata["process"]:
+            time.sleep(0.001)
+
+        print("-"*20)
+        # print("File : ", glabeldata["name"])
+
+        filename = data['filename']
+        for d in data['data']:
+            for p in glabeldata["data"]:
+                if filename != p["filename"]:
+                    continue
+                rect = [d["left"], d["top"], d["width"], d["height"]]
+                result = []
+                for g in p["textdata"]:
+                    iou = get_iou(rect, g["rect"])
+                    if iou > iou_thresh:
+                        result.append(g)
+                if result.__len__() > 0:
+                    result = sorted(result, key=lambda a:a["rect"][0])
+                    text = ""
+                    for r in result:
+                        text += r["text"] + " "
+                    print("text : ", text, ",\tlabel : ", d["label"], ",\trect(x,y,w,h) : ", rect)
+
+        return 'Ok', 200
+    except:
+        return 'Fail', 500
+
+
+@app.route('/upload-file', methods=['POST'])
+def edit_upload_file():
+    global glabeldata
+    try:
+        file = request.files['file']
+        swidth = int(request.form.get('screenWidth'))
+
+        swidth = 1400 if swidth is None else swidth
+
+        type = file.content_type.lower()
+        data = []
+
+        # get image
+        if type.endswith("webp") or type.endswith("jfif"):
+            image_data = file.read()
+            image_io = BytesIO(image_data)
+
+            # Open the image using Pillow
+            image = Image.open(image_io)
+
+            # Convert the image to the desired format (e.g., JPEG)
+            image = image.convert('RGB')
+
+            image = resize_image(image, swidth)
+
+            fname = os.path.splitext(file.filename)[0] + ".png"
+            image.save(fname, 'PNG')
+            with open(fname, 'rb') as f:
+                fdata = f.read()
+            image_data = io.BytesIO(fdata)
+            data.append({
+                            'filename': fname,
+                            'image': base64.b64encode(image_data.getvalue()).decode('utf-8')
+                        })
+        if type.endswith("jpg") or type.endswith("jpeg") or type.endswith("png") or type.endswith("bmp"):
+            image = Image.open(file)
+            image = resize_image(image, swidth)
+
+            fname = os.path.splitext(file.filename)[0] + ".png"
+            image.save(fname, 'PNG')
+            with open(fname, 'rb') as f:
+                fdata = f.read()
+            image_data = io.BytesIO(fdata)
+            data.append({
+                'filename': fname,
+                'image': base64.b64encode(image_data.getvalue()).decode('utf-8')
+            })
+        if type.endswith("pdf"):
+            file.save("temp.pdf")
+            images = convert_from_path('temp.pdf', 500)
+
+            if images is not None:
+                for cnt in range(images.__len__()):
+                    image = images[cnt]
+                    fname = os.path.splitext(file.filename)[0] + f"_{cnt}.png"
+                    image.save(fname, 'PNG')
+                    with open(fname, 'rb') as f:
+                        fdata = f.read()
+                    image_data = io.BytesIO(fdata)
+                    data.append({
+                            'filename': fname,
+                            'image': base64.b64encode(image_data.getvalue()).decode('utf-8')
+                        })
+
+        if data.__len__() == 0:
+            return 'Fail', 500
+
+        glabeldata = {"data" : data, "process" : False}
+        thread = Thread(target=detect_text)
+        thread.start()
+
+        response = jsonify(data)
+
+        # Set the appropriate Content-Type header
+        response.headers['Content-Type'] = 'application/json'
+
+        return response
+
+    except:
+        print("error")
+        return 'Fail', 500
+
+# End Edit By Sayed
 
 
 if __name__ == "__main__":
