@@ -18,8 +18,7 @@ import Details from "./Details";
 import JSONPage from "./JSONPage";
 import DocAIView from "./DocAIView";
 import FilePreview from "./FilePreview";
-import EditUI from "./EditUI/EditUI";
-//import PropTypes from 'prop-types';
+import Edit from "./Edit";
 
 /**
  * props:
@@ -31,14 +30,9 @@ function DocAITopLevel(props) {
   const [tabValue, setTabValue] = useState(0);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
   const [fileType, setFileType] = useState("invoice");
   const [file, setFile] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
-
-  function tabChange(event, newValue) {
-    setTabValue(newValue);
-  }
 
   function handleFileTypeChange(event) {
     setFileType(event.target.value);
@@ -128,7 +122,7 @@ function DocAITopLevel(props) {
         {tabValue === 1 && <JSONPage data={data} />}
         {tabValue === 2 && <Details data={data} />}
         {tabValue === 3 && <Search data={data} />}
-        {tabValue === 4 && <EditUI/>}
+        {tabValue === 4 && <Edit/>}
       </div>
     </div>
   );

@@ -1,14 +1,9 @@
-Following is the code for labeling react app:
-
-App.js:
 import axios from 'axios';
 import React, { useState} from 'react';
 import {LabelDrawing, LabelText} from './labelling'
 import { fabric } from "fabric";
 
-
-
-function App() {
+function Edit() {
   const [labelInstance, setLabelInstance] = useState(null);
   const [oldImageInstance, setOldImageInstance] = useState(null);
   const [canvasInstance, setCanvasInstance] = useState(null);
@@ -233,181 +228,33 @@ function App() {
   
   
   return (
-    <div id="app-div">
-      <label className="title"> Web Labelling Tool</label>
-      <div id='body-contatiner'>
-        <div className='group-button'>
-          <button id="upload-json" onClick={()=> document.getElementById("json-upload").click()}> Select Json </button>
-          <input type="file" id="json-upload" accept=".json" hidden onChange={handleJsonChange} />
-          <button id="upload-image" onClick={()=> document.getElementById("image-upload").click()}> Select Image </button>
-          <input type="file" id="image-upload" accept="image/*" hidden onChange={handleFileChange} />
-          <button id="upload-pdf" onClick={()=> document.getElementById("pdf-upload").click()}> Select PDF </button>
-          <input type="file" id="pdf-upload" accept="application/pdf" hidden onChange={handleFileChange} />
-        </div>
-        <div className='group-button'>
-        <button id="edit" onClick={handleEdit}> {editBtnText} </button>
-        
-        {images.length > 1 && currentIndex > 0 && (<button id="prev" onClick={handlePrev}> Prev </button>)} 
-
-        {images.length > 1 && currentIndex < images.length - 1 && (<button id="next" onClick={handleNext}> Next </button>)} 
-        
-        <button id="submit" onClick={handleUpload}> Submit </button>
-        </div>
-        <div className='canvas-div'>
-          <canvas id="canvas" width={500} height={800}/>
-        </div>
-        <LabelText
-          options={classData}
-          onCancel={handleCloseDialog}
-          onOk={handleOk}
-          show={showDialog}
-          x={anchorPoint.x} y={anchorPoint.y} />
-        {/* <LabelText /> */}
+    <div className="font-sans text-center">
+      <div className="flex flex-row items-center justify-center space-x-5 my-5">
+        <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={()=> document.getElementById("json-upload").click()}> Select Json </button>
+        <input type="file" id="json-upload" accept=".json" hidden onChange={handleJsonChange} />
+        <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={()=> document.getElementById("image-upload").click()}> Select Image </button>
+        <input type="file" id="image-upload" accept="image/*" hidden onChange={handleFileChange} />
+        <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={()=> document.getElementById("pdf-upload").click()}> Select PDF </button>
+        <input type="file" id="pdf-upload" accept="application/pdf" hidden onChange={handleFileChange} />
+        <button className="py-2 px-4 bg-blue-500 text-white rounded" id="edit" onClick={handleEdit}> {editBtnText} </button>
+        {images.length > 1 && currentIndex > 0 && (<button className="py-2 px-4 bg-blue-500 text-white rounded" id="prev" onClick={handlePrev}> Prev </button>)} 
+        {images.length > 1 && currentIndex < images.length - 1 && (<button className="py-2 px-4 bg-blue-500 text-white rounded" id="next" onClick={handleNext}> Next </button>)} 
+        <button className="py-2 px-4 bg-blue-500 text-white rounded" id="submit" onClick={handleUpload}> Submit </button>
       </div>
+      <div className='border-black border flex justify-center'>
+        <canvas id="canvas"/>
+      </div>
+      <LabelText
+        options={classData}
+        onCancel={handleCloseDialog}
+        onOk={handleOk}
+        show={showDialog}
+        x={anchorPoint.x} y={anchorPoint.y} />
     </div>
-    );
-  }
-  
-  export default App;
-
-const.js:
-export const defaultRectOptions = {
-    strokeWidth: 2,
-    stroke: "red",
-    fill: "transparent",
-    width: 20,
-    height: 20,
-    strokeUniform: true,
-    noScaleCache: false,
-    objectCaching: false
-  };
-  
-  
-
-export const defaultLineOptions = {
-    strokeWidth: 2,
-    stroke: "red",
-    fill: "red",
-    strokeUniform: true,
-    noScaleCache: false
-  }
-  
-export const drawingMode = {
-    RECTANGLE: "RECTANGLE",
-    POLYGON: "POLYGON"
-  };
-
-index.js:
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
-
-Edit.js:
-import React, {useEffect, useRef, useState} from "react";
-
-export default function Edit() {
-
+  );
 }
 
-reportWebVitals.js
-const reportWebVitals = onPerfEntry => {
-  if (onPerfEntry && onPerfEntry instanceof Function) {
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry);
-      getFID(onPerfEntry);
-      getFCP(onPerfEntry);
-      getLCP(onPerfEntry);
-      getTTFB(onPerfEntry);
-    });
-  }
-};
+export default Edit;
 
-export default reportWebVitals;
 
-labelling/index.js:
-export { default as BaseDrawing } from "./basedrawing";
 
-export { default as LabelDrawing } from "./labeldrawing";
-
-export { default as LabelText} from "./labeltext";
-
-labelling/labeltext.js:
-import "../styles.css";
-import React, { useState } from 'react';
-
- 
-const LabelText = ({ options, onCancel, onOk, show, x, y }) => {
-  const [selectedOption, setSelectedOption] = useState('');
-
-  const handleOptionClick = (option) => {
-    setSelectedOption(option);
-  };
-
-  const handleInputChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
-
-  const handleCancel = () => {
-    onCancel();
-  };
-
-  const handleOk = () => {
-    onOk(selectedOption);
-  };
-
-  return show ? (
-    <React.Fragment>
-    <div
-      style={{
-        position: 'absolute',
-        top: y,
-        left: x,
-        border: '1px solid black',
-        padding: '10px',
-        backgroundColor: 'white',
-        opacity:0.7,
-      }}
-    >
-        <div className="clstitle-div">
-            <label>Insert Class Name</label>
-        </div>
-            <input className="clstext-div" type="text" value={selectedOption} onChange={handleInputChange} />
-        <div>
-            {options.map((option) => (
-            <div 
-                className="clsmenu-div"
-                key={option}
-                onClick={() => handleOptionClick(option)}
-            >
-                {option}
-            </div>
-            ))}
-        </div>
-      <br />
-      <div className="clsbtn-div">
-        <button onClick={handleCancel}>Cancel</button>
-        <button onClick={handleOk}> O K </button>
-      </div>
-      
-    </div>
-    </React.Fragment>
-  ) : null;
-};
-
-export default LabelText;
-
-I'll share the labelling folders code too, remember this all.
