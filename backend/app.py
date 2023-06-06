@@ -1,4 +1,5 @@
 import json
+import requests
 import openai
 from decouple import config
 
@@ -34,6 +35,8 @@ PROCESSORS = {
     "t4-tax-document": "2e1d3d05ee3b0bcf",
     "bank-statement": "8ef05a0f90e1ccb8",
 }
+
+invoice_columns = ["total_amount", "total_tax_amount", "currency", "supplier_name"]
 
 m = []
 
@@ -114,6 +117,14 @@ def upload_file():
 
     result_document = result.document
     response = json.loads(documentai.Document.to_json(result_document))
+    # if document_type == "invoice":
+    #     invoice_data = {}
+    #     for entity in response.get("entities", {}):
+    #         if entity["type"] not in invoice_columns:
+    #             continue
+    #         invoice_data[entity["type"]] = entity["mentionText"]
+    #     saved_invoice_data = requests.post("http://localhost:5001/invoice", json=invoice_data)
+    #     print(saved_invoice_data.json())
 
     # return the response as JSON
     return jsonify(response)

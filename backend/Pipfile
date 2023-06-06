@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "==2.2.5"
+flask = "*"
 google-cloud-documentai = "*"
 google-auth = "==2.18.1"
 gunicorn = "*"
@@ -47,6 +47,10 @@ urllib3 = "==1.26.15"
 webp = "==0.1.5"
 werkzeug = "==2.2.3"
 zipp = "==3.15.0"
+mysqlclient = "*"
+flask-sqlalchemy = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
 
 [dev-packages]
 black = "*"
