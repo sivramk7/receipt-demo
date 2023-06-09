@@ -51,6 +51,11 @@ mysqlclient = "*"
 flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
+colorama = "*"
+python-dotenv = "*"
+pyodbc = "*"
+python-quickbooks = "*"
+intuit-oauth = "*"
 
 [dev-packages]
 black = "*"
