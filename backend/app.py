@@ -343,42 +343,37 @@ def edit_upload_file():
 @app.route('/pdf_to_image/', methods=['POST'])
 def pdf_to_image():
     global glabeldata
-    try:
-        file = request.files['file']
-        type = file.content_type.lower()
-        data = []
+    file = request.files['file']
+    type = file.content_type.lower()
+    data = []
 
-        # get image
-        if type.endswith("pdf"):
-            file.save("temp.pdf")
-            images = convert_from_path('temp.pdf', 500)
+    # get image
+    if type.endswith("pdf"):
+        file.save("temp.pdf")
+        images = convert_from_path('temp.pdf', 500)
 
-            if images is not None:
-                for cnt in range(images.__len__()):
-                    image = images[cnt]
-                    fname = os.path.splitext(file.filename)[0] + f"_{cnt}.png"
-                    image.save(fname, 'PNG')
-                    with open(fname, 'rb') as f:
-                        fdata = f.read()
-                    image_data = io.BytesIO(fdata)
-                    data.append({
-                            'filename': fname,
-                            'image': base64.b64encode(image_data.getvalue()).decode('utf-8')
-                        })
+        if images is not None:
+            for cnt in range(images.__len__()):
+                image = images[cnt]
+                fname = os.path.splitext(file.filename)[0] + f"_{cnt}.png"
+                image.save(fname, 'PNG')
+                with open(fname, 'rb') as f:
+                    fdata = f.read()
+                image_data = io.BytesIO(fdata)
+                data.append({
+                        'filename': fname,
+                        'image': base64.b64encode(image_data.getvalue()).decode('utf-8')
+                    })
 
-        if data.__len__() == 0:
-            return 'No page', 500
+    if data.__len__() == 0:
+        return 'No page', 500
 
-        response = jsonify(data)
+    response = jsonify(data)
 
-        # Set the appropriate Content-Type header
-        response.headers['Content-Type'] = 'application/json'
+    # Set the appropriate Content-Type header
+    response.headers['Content-Type'] = 'application/json'
 
-        return response
-
-    except :
-        print("error")
-        return 'exception', 500
+    return response
 
 
 # End Edit By Sayed
