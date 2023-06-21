@@ -22,7 +22,8 @@ function SVG_Viewer(props) {
         const formData = new FormData();
         formData.append("file", props.imageData);
         try {
-          const response = await fetch("http://127.0.0.1:5000/pdf_to_image", {
+          // const response = await fetch("http://127.0.0.1:5000/pdf_to_image", {
+          const response = await fetch("https://demo.getafto.com/pdf_to_image", {
             method: "POST",
             body: formData,
           });
