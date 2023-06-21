@@ -18,6 +18,7 @@ import Details from "./Details";
 import JSONPage from "./JSONPage";
 import DocAIView from "./DocAIView";
 import FilePreview from "./FilePreview";
+import SVG_Viewer from "./SVG_Viewer";
 import Edit from "./Edit";
 
 /**
@@ -62,12 +63,12 @@ function DocAITopLevel(props) {
       formData.append("file_type", fileType);
 
       // For local
-        // const request = await fetch("http://127.0.0.1:5000/upload/", {
-        // For prod
-        const request = await fetch("/upload/", {
-          method: "POST",
-          body: formData,
-        });
+      // const request = await fetch("http://127.0.0.1:5000/upload/", {
+      // For prod
+      const request = await fetch("/upload/", {
+        method: "POST",
+        body: formData,
+      });
       const response = await request.json();
       setData(response);
       setLoading(false);
@@ -117,7 +118,13 @@ function DocAITopLevel(props) {
         </div>
       </div>
       <div className="flex-grow flex-shrink overflow-y-auto flex flex-col">
-        {uploadedFile && !data && <FilePreview file={uploadedFile} />}
+        {/* {uploadedFile && !data && <FilePreview file={uploadedFile} />} */}
+        {uploadedFile && !data && 
+        <SVG_Viewer
+          style={{ overflow: "scroll" }}
+          imageData={uploadedFile}
+          data = {data}
+        />}
         {tabValue === 0 && <DocAIView data={data} />}
         {tabValue === 1 && <JSONPage data={data} />}
         {tabValue === 2 && <Details data={data} />}
