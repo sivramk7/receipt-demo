@@ -22,9 +22,13 @@ const InvoiceForm = () => {
       id: uid(6),
       name: '',
       qty: 1,
+      code: 0,
+      subTotalCustom: 1,
       price: '1.00',
     },
   ]);
+
+  const [isMobileScreen, setIsMobileScreen] = useState(window.innerWidth < 768);
 
   const reviewInvoiceHandler = (event) => {
     event.preventDefault();
@@ -38,6 +42,8 @@ const InvoiceForm = () => {
         id: uid(6),
         name: '',
         qty: 1,
+        code: 0,
+        subTotalCustom: 1,
         price: '1.00',
       },
     ]);
@@ -51,6 +57,8 @@ const InvoiceForm = () => {
         id: id,
         name: '',
         qty: 1,
+        code: 0,
+        subTotalCustom: 1,
         price: '1.00',
       },
     ]);
@@ -87,7 +95,6 @@ const InvoiceForm = () => {
   const taxRate = (tax * subtotal) / 100;
   const discountRate = (discount * subtotal) / 100;
   const total = subtotal - discountRate + taxRate;
-
   return (
     <form
       className="relative flex flex-col px-2 md:flex-row"
@@ -122,12 +129,12 @@ const InvoiceForm = () => {
             htmlFor="cashierName"
             className="text-sm font-bold sm:text-base"
           >
-            Cashier:
+            Location:
           </label>
           <input
             required
             className="flex-1"
-            placeholder="Cashier name"
+            placeholder="Drop location"
             type="text"
             name="cashierName"
             id="cashierName"
@@ -151,29 +158,55 @@ const InvoiceForm = () => {
             onChange={(event) => setCustomerName(event.target.value)}
           />
         </div>
-        <table className="w-full p-4 text-left">
-          <thead>
-            <tr className="border-b border-gray-900/10 text-sm md:text-base">
-              <th>ITEM</th>
-              <th>QTY</th>
-              <th className="text-center">PRICE</th>
-              <th className="text-center">ACTION</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <InvoiceItem
-                key={item.id}
-                id={item.id}
-                name={item.name}
-                qty={item.qty}
-                price={item.price}
-                onDeleteItem={deleteItemHandler}
-                onEdtiItem={edtiItemHandler}
-              />
-            ))}
-          </tbody>
-        </table>
+        {
+          isMobileScreen===false ?
+          <table className="w-full p-4 text-left">
+            <thead>
+              <tr className="border-b border-gray-900/10 text-sm md:text-base">
+                <th>ITEM</th>
+                <th>QTY</th>
+                <th className="text-center">PRICE</th>
+                <th className="text-center">ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <InvoiceItem
+                  isMobileScreen={isMobileScreen}
+                  key={item.id}
+                  id={item.id}
+                  name={item.name}
+                  qty={item.qty}
+                  price={item.price}
+                  onDeleteItem={deleteItemHandler}
+                  onEdtiItem={edtiItemHandler}
+                />
+              ))}
+            </tbody>
+          </table>
+          :
+          // This is for mobile view
+          <table className="w-full p-4 text-left">
+            <tbody>
+              {items.map((item) => (
+                <InvoiceItem
+                  isMobileScreen={isMobileScreen}
+                  len={items.length}
+                  key={item.id}
+                  id={item.id}
+                  name={item.name}
+                  qty={item.qty}
+                  code={item.code}
+                  subTotalCustom={item.subTotalCustom}
+                  price={item.price}
+                  onDeleteItem={deleteItemHandler}
+                  onEdtiItem={edtiItemHandler}
+                />
+              ))}
+            </tbody>
+          </table>
+        }
+        
         <button
           className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white shadow-sm hover:bg-blue-600"
           type="button"
